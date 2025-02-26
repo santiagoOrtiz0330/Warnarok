@@ -234,13 +234,15 @@ function	Job_Options	{
 				break;
 			case Job_Novice_High:
 				// Job change after rebirth
-				if( .LastJob && lastJob )
-					Job_Options(.@job_opt,
-						roclass((eaclass(lastJob)&EAJ_BASEMASK)|EAJL_UPPER));
-				else
-					Job_Options(.@job_opt, 
-						Job_Swordman_High, Job_Mage_High, Job_Archer_High,
-						Job_Acolyte_High, Job_Merchant_High, Job_Thief_High);
+				//if( .LastJob && lastJob )
+				//	Job_Options(.@job_opt,
+				//		roclass((eaclass(lastJob)&EAJ_BASEMASK)|EAJL_UPPER));
+				//else
+				//	Job_Options(.@job_opt, 
+				//		Job_Swordman_High, Job_Mage_High, Job_Archer_High,
+				//		Job_Acolyte_High, Job_Merchant_High, Job_Thief_High);
+				mes "No more jobs are available.";
+					close;
 				break;
 			case Job_Baby:
 				if( !.BabyClass )
@@ -506,13 +508,13 @@ OnInit:
 	.FourthClass = false;				// Enable fourth classes?
 	.FourthExpanded = false;				// Enable new expanded fourth classes: Ex. Hyper Novice, Rebellion, Shinkiro/Shiranui?
 	.ThirdClass = false;					// Enable third classes?
-	.RebirthClass = true;				// Enable rebirth classes?
+	.RebirthClass = false;				// Enable rebirth classes?
 	.SecondExpanded = true;				// Enable new expanded second classes: Ex. Super Novice, Kagerou/Oboro, Rebellion?
-	.BabyNovice = true;					// Enable Baby novice classes? Disable it if you like player must have parent to get job baby.
+	.BabyNovice = false;					// Enable Baby novice classes? Disable it if you like player must have parent to get job baby.
 	.BabyClass = true;					// Enable Baby classes?
 	.BabyThird = false;					// Enable Baby third classes?
-	.BabyExpanded = true;				// Enable Baby Expanded classes: Ex. Baby Ninja, Baby Taekwon, etc.
-	.BabySummoner = true;				// Enable Baby Summoner?
+	.BabyExpanded = false;				// Enable Baby Expanded classes: Ex. Baby Ninja, Baby Taekwon, etc.
+	.BabySummoner = false;				// Enable Baby Summoner?
 	.LastJob = true;					// Enforce linear class changes?
 	.SkillPointCheck = true;			// Force player to use up all skill points?
 	.Platinum = true;					// Get platinum skills automatically?

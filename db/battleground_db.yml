@@ -102,7 +102,7 @@ Body:
           Variable: $@TierraBG2_id2
   - Id: 2
     Name: Flavius
-    MinPlayers: 6
+    MinPlayers: 1
     MinLevel: 80
     JobRestrictions:
       Novice: true

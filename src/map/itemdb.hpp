@@ -55,6 +55,7 @@ enum item_itemid : t_itemid
 	ITEMID_ANODYNE						= 605,
 	ITEMID_ALOEBERA						= 606,
 	ITEMID_MAGNIFIER					= 611,
+	ITEMID_BERSERK_POTION				= 657,
 	ITEMID_POISON_BOTTLE				= 678,
 	ITEMID_EMPTY_BOTTLE					= 713,
 	ITEMID_EMPERIUM						= 714,
@@ -118,6 +119,7 @@ enum item_itemid : t_itemid
 	ITEMID_INVENTORY_EX					= 25793,
 	ITEMID_WHITE_SLIM_POTION2			= 40002,
 	ITEMID_POISON_BOTTLE2				= 40021,
+	ITEMID_BERSERK_POTION2				= 40023,
 	ITEMID_YELLOW_GEMSTONE2				= 40050,
 	ITEMID_RED_GEMSTONE2				= 40051,
 	ITEMID_BLUE_GEMSTONE2				= 40052,
@@ -3107,6 +3109,7 @@ struct s_random_opt_group_entry {
 struct s_random_opt_group {
 	uint16 id;
 	std::string name;
+	std::vector<uint16> slot_chance;
 	std::map<uint16, std::vector<std::shared_ptr<s_random_opt_group_entry>>> slots;
 	uint16 max_random;
 	std::vector<std::shared_ptr<s_random_opt_group_entry>> random_options;

@@ -33,6 +33,8 @@ Header:
 
 Footer:
   Imports:
+  - Path: db/pre-re/item_randomopt_db.yml
+    Mode: Prerenewal
   - Path: db/re/item_randomopt_db.yml
     Mode: Renewal
   - Path: db/import/item_randomopt_db.yml

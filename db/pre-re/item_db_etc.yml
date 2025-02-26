@@ -21206,6 +21206,8 @@ Body:
     Weight: 30
     Flags:
       BuyingStore: true
+    Trade:
+      NoSell: true
   - Id: 40051
     AegisName: Red_Gemstone2
     Name: Red Gemstone
@@ -21214,6 +21216,8 @@ Body:
     Weight: 30
     Flags:
       BuyingStore: true
+    Trade:
+      NoSell: true
   - Id: 40052
     AegisName: Blue_Gemstone2
     Name: Blue Gemstone
@@ -21222,18 +21226,24 @@ Body:
     Weight: 30
     Flags:
       BuyingStore: true
+    Trade:
+      NoSell: true
   - Id: 40053
     AegisName: Fire_Bottle2
     Name: Bottle Grenade
     Type: Etc
     Buy: 200
     Weight: 10
+    Trade:
+      NoSell: true
   - Id: 40054
     AegisName: Acid_Bottle2
     Name: Acid Bottle
     Type: Etc
     Buy: 200
     Weight: 10
+    Trade:
+      NoSell: true
   - Id: 40055
     AegisName: Spiderweb2
     Name: Cobweb
@@ -21242,18 +21252,24 @@ Body:
     Weight: 10
     Flags:
       BuyingStore: true
+    Trade:
+      NoSell: true
   - Id: 40056
     AegisName: Coating_Bottle2
     Name: Glistening Coat
     Type: Etc
     Buy: 200
     Weight: 10
+    Trade:
+      NoSell: true
   - Id: 40057
     AegisName: MenEater_Plant_Bottle2
     Name: Plant Bottle
     Type: Etc
     Buy: 200
     Weight: 10
+    Trade:
+      NoSell: true
   - Id: 40058
     AegisName: Fragment_Of_Crystal2
     Name: Crystal Fragment
@@ -21262,3 +21278,5 @@ Body:
     Weight: 10
     Flags:
       BuyingStore: true
+    Trade:
+      NoSell: true

@@ -26,11 +26,13 @@ prontera,156,181,3	script	Telma	701,{
 	// Definir los consumibles en un array
 	setarray .Consumables_BG[0], 
 	    40001, 40,   // Mastela Fruit
-	    40002, 50,   // Condensed White Potion
 	    40003, 50,   // Light Blue Potion
 	    40000, 10,   // Speed Potion
+	    40002, 50,   // Condensed White Potion
 		40022, 5,	 // Royal Jelly
 	    40021, 5,    // Poison Bottle
+	    40023, 5,    // Light Berserk Potion
+	    40024, 5,    // Light Awakening Potion
 	    40053, 50,   // Fire Bottle
 	    40054, 50,   // Acid Bottle
 	    40056, 10,   // Glistening Coat
@@ -39,6 +41,7 @@ prontera,156,181,3	script	Telma	701,{
 	    40051, 20,   // Red Gemstone
 	    40050, 20,   // Yellow Gemstone
 	    40055, 10,   // Cobweb
+	    40058, 20,   // Crystal Fragment
 	    40009, 1,    // Whole Roast STR
 	    40004, 1,    // Steamed Alligator with Vegetable AGI
 	    40007, 1,    // Sumptuous Feast VIT
@@ -61,11 +64,13 @@ prontera,156,181,3	script	Telma	701,{
 	// Menú dinámico
 	set @choice, select(
 	    "40 Mastela Fruit",
-	    "50 Condensed White Potion",
 	    "50 Light Blue Potion",
 	    "10 Speed Potion",
+	    "50 Condensed White Potion",
 	    "5 Royal Jelly",
 	    "5 Poison Bottle",
+	    "5 Light Berserk Potion",
+	    "5 Light Awakening Potion",
 	    "50 Fire Bottle",
 	    "50 Acid Bottle",
 	    "10 Glistening Coat",
@@ -74,6 +79,7 @@ prontera,156,181,3	script	Telma	701,{
 	    "20 Red Gemstone",
 	    "20 Yellow Gemstone",
 	    "10 Cobweb",
+	    "20 Crystal Fragment",
 	    "1 Whole Roast STR +7",
 	    "1 Steamed Alligator with Vegetable AGI +7",
 	    "1 Sumptuous Feast VIT +7",

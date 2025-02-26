@@ -3635,8 +3635,15 @@ int64 skill_attack (int32 attack_type, struct block_list* src, struct block_list
 			flag |= 4;
 			//Spirit of Wizard blocks Kaite's reflection
 			if( type == 2 && tsc && tsc->getSCE(SC_SPIRIT) && tsc->getSCE(SC_SPIRIT)->val2 == SL_WIZARD )
-			{	//Consume one Fragment per hit of the casted skill? [Skotlex]
+			{	
+				//Consume one Fragment per hit of the casted skill? [Skotlex]
 				type = tsd?pc_search_inventory (tsd, ITEMID_FRAGMENT_OF_CRYSTAL):0;
+
+				// WINNER RO: se revisa si esta en un mapa de WOE o BG para asi consumir los Combat Item
+				map_data *mapdata = map_getmapdata(sd->bl.m);
+				if (type < 0  && mapdata && mapdata->getMapFlag(MF_GVG))
+					type = tsd?pc_search_inventory (tsd, ITEMID_FRAGMENT_OF_CRYSTAL2):0;
+
 				if (type >= 0) {
 					if ( tsd )
 						pc_delitem(tsd, type, 1, 0, 1, LOG_TYPE_CONSUME);
@@ -19747,7 +19754,8 @@ struct s_skill_condition skill_get_requirement(map_session_data* sd, uint16 skil
 						{ ITEMID_COATING_BOTTLE, ITEMID_COATING_BOTTLE2 },
 						{ ITEMID_MAN_EATER_BOTTLE, ITEMID_MAN_EATER_BOTTLE2 },
 						{ ITEMID_FRAGMENT_OF_CRYSTAL, ITEMID_FRAGMENT_OF_CRYSTAL2 },
-						{ ITEMID_POISON_BOTTLE, ITEMID_POISON_BOTTLE2 }
+						{ ITEMID_POISON_BOTTLE, ITEMID_POISON_BOTTLE2 },
+						{ ITEMID_BERSERK_POTION, ITEMID_BERSERK_POTION2 },
 						// Puedes seguir agregando más pares de ítems aquí
 					};
 					

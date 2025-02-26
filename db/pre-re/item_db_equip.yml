@@ -41114,7 +41114,7 @@ Body:
     EquipLevelMin: 1
     View: 2371
     Flags:
-      DropEffect: ORANGE_PILLAR
+      DropEffect: YELLOW_PILLAR
     Script: |
       bonus bStr,3;
   - Id: 31501

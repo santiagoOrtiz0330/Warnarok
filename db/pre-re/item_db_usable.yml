@@ -22113,8 +22113,9 @@ Body:
     Buy: 2
     Weight: 100
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_SPEEDUP1,5000,50;
   - Id: 40001
@@ -22124,8 +22125,9 @@ Body:
     Buy: 8500
     Weight: 30
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemheal rand(400,600),0;
   - Id: 40002
@@ -22136,6 +22138,8 @@ Body:
     Weight: 20
     Flags:
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemheal rand(325,405),0;
   - Id: 40003
@@ -22146,6 +22150,8 @@ Body:
     Weight: 10
     Flags:
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemheal 0,rand(40,60);
   - Id: 40004
@@ -22155,8 +22161,9 @@ Body:
     Buy: 40000
     Weight: 800
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_FOOD_AGI_CASH,1200000,7;
   - Id: 40005
@@ -22166,8 +22173,9 @@ Body:
     Buy: 40000
     Weight: 800
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_FOOD_DEX_CASH,1200000,7;
   - Id: 40006
@@ -22177,8 +22185,9 @@ Body:
     Buy: 40000
     Weight: 800
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_FOOD_LUK_CASH,1200000,7;
   - Id: 40007
@@ -22188,8 +22197,9 @@ Body:
     Buy: 40000
     Weight: 400
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_FOOD_VIT_CASH,1200000,7;
   - Id: 40008
@@ -22199,8 +22209,9 @@ Body:
     Buy: 40000
     Weight: 800
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_FOOD_INT_CASH,1200000,7;
   - Id: 40009
@@ -22210,11 +22221,11 @@ Body:
     Buy: 40000
     Weight: 1000
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start SC_FOOD_STR_CASH,1200000,7;
-      percentheal 10,4;
   - Id: 40010
     AegisName: Gloomy_Box2
     Name: Box of Gloom
@@ -22222,8 +22233,9 @@ Body:
     Buy: 1000
     Weight: 200
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     NoUse:
       Sitting: true
     Script: |
@@ -22235,8 +22247,9 @@ Body:
     Buy: 1000
     Weight: 200
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     NoUse:
       Sitting: true
     Script: |
@@ -22248,8 +22261,9 @@ Body:
     Buy: 1000
     Weight: 200
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     NoUse:
       Sitting: true
     Script: |
@@ -22261,8 +22275,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start4 SC_ARMOR_ELEMENT_FIRE,1200000,-15,0,20,0;
   - Id: 40014
@@ -22272,8 +22287,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start4 SC_ARMOR_ELEMENT_WATER,1200000,20,0,0,-15;
   - Id: 40015
@@ -22283,8 +22299,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start4 SC_ARMOR_ELEMENT_EARTH,1200000,0,20,-15,0;
   - Id: 40016
@@ -22294,8 +22311,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       sc_start4 SC_ARMOR_ELEMENT_WIND,1200000,0,-15,0,20;
   - Id: 40017
@@ -22305,8 +22323,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemskill "ITEM_ENCHANTARMS",4;
   - Id: 40018
@@ -22316,8 +22335,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemskill "ITEM_ENCHANTARMS",2;
   - Id: 40019
@@ -22327,8 +22347,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemskill "ITEM_ENCHANTARMS",3;
   - Id: 40020
@@ -22338,8 +22359,9 @@ Body:
     Buy: 2
     Weight: 10
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemskill "ITEM_ENCHANTARMS",5;
   - Id: 40021
@@ -22349,8 +22371,9 @@ Body:
     Buy: 5000
     Weight: 100
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       if (Class == Job_Assassin_Cross) {
          sc_start SC_DPoison,60000,0;
@@ -22365,8 +22388,9 @@ Body:
     Buy: 7000
     Weight: 150
     Flags:
-      BuyingStore: true
       CombatItem: true
+    Trade:
+      NoSell: true
     Script: |
       itemheal rand(325,405),rand(40,60);
       sc_end SC_Poison;
@@ -22375,3 +22399,66 @@ Body:
       sc_end SC_Confusion;
       sc_end SC_Curse;
       sc_end SC_Hallucination;
+  - Id: 40023
+    AegisName: Light_Berserk_Pot2
+    Name: Light Berserk Potion
+    Type: Usable
+    Buy: 3000
+    Weight: 20
+    Jobs:
+      Alchemist: true
+      Blacksmith: true
+      Crusader: true
+      Gunslinger: true
+      Knight: true
+      Mage: true
+      Merchant: true
+      Rogue: true
+      SoulLinker: true
+      StarGladiator: true
+      Swordman: true
+      Taekwon: true
+      Wizard: true
+    EquipLevelMin: 85
+    Flags:
+      CombatItem: true
+    Trade:
+      NoSell: true
+    Script: |
+      sc_start SC_ASPDPOTION2,1800000,0;
+  - Id: 40024
+    AegisName: Light_Awakening_Pot2
+    Name: Light Awakening Potion
+    Type: Usable
+    Buy: 1500
+    Weight: 20
+    Jobs:
+      Alchemist: true
+      Archer: true
+      Assassin: true
+      Blacksmith: true
+      Crusader: true
+      Gunslinger: true
+      Hunter: true
+      Knight: true
+      Mage: true
+      Merchant: true
+      Monk: true
+      Ninja: true
+      Novice: true
+      Rogue: true
+      Sage: true
+      SoulLinker: true
+      StarGladiator: true
+      SuperNovice: true
+      Swordman: true
+      Taekwon: true
+      Thief: true
+      Wizard: true
+    EquipLevelMin: 40
+    Flags:
+      CombatItem: true
+    Trade:
+      NoSell: true
+    Script: |
+      sc_start SC_ASPDPOTION1,1800000,0;

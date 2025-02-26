@@ -4597,24 +4597,29 @@ void s_random_opt_group::apply( struct item& item ){
 		item.option[i].param = 0;
 	};
 
+	// WINNER RO: SE GENERA UN ALEATORIO ENTRE 1 Y 10O0 Y SE EVALUA SEGUN EL PROCENTAJE DE SLOT CHANCE PARA SABER SI SE APLICA O NO
+	int randomChance = 1 + rand() % 100; 
 	// Apply Must options
 	for( size_t i = 0; i < this->slots.size(); i++ ){
-		// Try to apply an entry
-		for( size_t j = 0, max = this->slots[static_cast<uint16>(i)].size() * 3; j < max; j++ ){
-			std::shared_ptr<s_random_opt_group_entry> option = util::vector_random( this->slots[static_cast<uint16>(i)] );
+		// Evaluo si el slot chance es mayor o igual al random generado para saber si se aplica o no el slot
+		if (this->slot_chance[static_cast<uint16>(i)] >= randomChance){
+			// Try to apply an entry
+			for( size_t j = 0, max = this->slots[static_cast<uint16>(i)].size() * 3; j < max; j++ ){
+				std::shared_ptr<s_random_opt_group_entry> option = util::vector_random( this->slots[static_cast<uint16>(i)] );
 
-			if ( rnd_chance<uint16>(option->chance, 10000) ) {
-				apply_sub( item.option[i], option );
-				break;
+				if ( rnd_chance<uint16>(option->chance, 10000) ) {
+					apply_sub( item.option[i], option );
+					break;
+				}
 			}
-		}
 
-		// If no entry was applied, assign one
-		if( item.option[i].id == 0 ){
-			std::shared_ptr<s_random_opt_group_entry> option = util::vector_random( this->slots[static_cast<uint16>(i)] );
+			// If no entry was applied, assign one
+			if( item.option[i].id == 0 ){
+				std::shared_ptr<s_random_opt_group_entry> option = util::vector_random( this->slots[static_cast<uint16>(i)] );
 
-			// Apply an entry without checking the chance
-			apply_sub( item.option[i], option );
+				// Apply an entry without checking the chance
+				apply_sub( item.option[i], option );
+			}
 		}
 	}
 
@@ -4723,6 +4728,17 @@ uint64 RandomOptionGroupDatabase::parseBodyNode(const ryml::NodeRef& node) {
 				this->invalidWarning(slotNode, "Random option slot does not contain Options node, skipping.\n");
 				return 0;
 			}
+
+			if (this->nodeExists(slotNode, "SlotChance")) {
+				uint16 slot_chance;
+		
+				if (!this->asUInt16(slotNode, "SlotChance", slot_chance))
+					return 0;
+
+					randopt->slot_chance.push_back(slot_chance);
+			} else {
+				randopt->slot_chance.push_back(100);
+			}	
 
 			std::vector<std::shared_ptr<s_random_opt_group_entry>> entries;
 			const auto& optionsNode = slotNode["Options"];
