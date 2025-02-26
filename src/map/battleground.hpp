@@ -28,17 +28,43 @@ struct s_battleground_data {
 	int32 id; ///< Battleground ID
 	std::vector<s_battleground_member_data> members; ///< List of players in battleground
 	struct point cemetery; ///< Respawn point for players who die
+
+	// Script Events
 	std::string logout_event; ///< NPC Event to call on log out events
 	std::string die_event; ///< NPC Event to call on death events
 	std::string active_event; ///< NPC Event to call on players joining an active battleground
+
+	int count;
+	time_t creation_tick; // Creation of this Team
+	// Team Leader and BG Skills features
+	int leader_char_id;
+	unsigned int color;
+	// Fake Guild Link
+	struct guild *g;
+	bool reveal_pos, reveal_flag;
+	// Score Board
+	int team_score;
 };
 
 struct s_battleground_team {
+	uint16 guild_index;
 	uint16 warp_x, warp_y; ///< Team respawn coordinates
 	std::string quit_event, ///< Team NPC Event to call on log out events
 		death_event, ///< Team NPC Event to call on death events
 		active_event, ///< Team NPC Event to call on players joining an active battleground
 		bg_id_var; ///< Team NPC variable name
+};
+
+struct guild {
+	char name[NAME_LENGTH];
+	char master[NAME_LENGTH];
+	struct guild_position position[MAX_GUILDPOSITION];
+	char emblem_data[2048];
+	int32 emblem_len,emblem_id;
+	uint16 guild_id;
+	uint16 guild_lv;
+	uint16 max_member;
+	guild_skill skill[MAX_GUILDSKILL];
 };
 
 struct s_battleground_map {
@@ -142,7 +168,7 @@ bool bg_queue_reservation(const char *name, bool state, bool ended);
 int32 bg_create(uint16 mapindex, s_battleground_team* team);
 bool bg_team_join(int32 bg_id, map_session_data *sd, bool is_queue);
 bool bg_team_delete(int32 bg_id);
-int32 bg_team_leave(map_session_data *sd, bool quit, bool deserter);
+int32 bg_team_leave(map_session_data *sd, bool quit, bool deserter, int flag);
 bool bg_team_warp(int32 bg_id, uint16 mapindex, short x, short y);
 bool bg_player_is_in_bg_map(map_session_data *sd);
 bool bg_queue_check_joinable(std::shared_ptr<s_battleground_type> bg, map_session_data *sd, const char *name);

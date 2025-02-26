@@ -10942,6 +10942,9 @@ int32 battle_check_target( struct block_list *src, struct block_list *target,int
 	ud = unit_bl2ud(target);
 	m = target->m;
 
+	if( flag&BCT_ENEMY && (map_getcell(m,src->x,src->y,CELL_CHKBASILICA) || map_getcell(m,target->x,target->y,CELL_CHKBASILICA)) )
+		return -1;
+
 	//t_bl/s_bl hold the 'master' of the attack, while src/target are the actual
 	//objects involved.
 	if( (t_bl = battle_get_master(target)) == nullptr )
@@ -11213,7 +11216,10 @@ int32 battle_check_target( struct block_list *src, struct block_list *target,int
 		if( flag&(BCT_PARTY|BCT_ENEMY) )
 		{
 			int32 s_party = status_get_party_id(s_bl);
-			if( s_party && s_party == status_get_party_id(t_bl) && !(mapdata->getMapFlag(MF_PVP) && mapdata->getMapFlag(MF_PVP_NOPARTY)) && !(mapdata_flag_gvg(mapdata) && mapdata->getMapFlag(MF_GVG_NOPARTY)) && (!mapdata->getMapFlag(MF_BATTLEGROUND) || sbg_id == tbg_id) )
+			if( mapdata->getMapFlag(MF_BATTLEGROUND) && sbg_id && sbg_id == tbg_id )
+				state |= BCT_PARTY; // On Battleground, same team works like Party
+			//else if( s_party && s_party == status_get_party_id(t_bl) && !(mapdata->getMapFlag(MF_PVP) && mapdata->getMapFlag(MF_PVP_NOPARTY)) && !(mapdata_flag_gvg(mapdata) && mapdata->getMapFlag(MF_GVG_NOPARTY)) && (!mapdata->getMapFlag(MF_BATTLEGROUND) || sbg_id == tbg_id) )
+			else if( !mapdata->getMapFlag(MF_BATTLEGROUND) && s_party && s_party == status_get_party_id(t_bl) && !(mapdata->getMapFlag(MF_PVP) && mapdata->getMapFlag(MF_PVP_NOPARTY)) && !(mapdata_flag_gvg(mapdata) && mapdata->getMapFlag(MF_GVG_NOPARTY)))
 				state |= BCT_PARTY;
 			else
 				state |= BCT_ENEMY;
@@ -11222,7 +11228,10 @@ int32 battle_check_target( struct block_list *src, struct block_list *target,int
 		{
 			int32 s_guild = status_get_guild_id(s_bl);
 			int32 t_guild = status_get_guild_id(t_bl);
-			if( !(mapdata->getMapFlag(MF_PVP) && mapdata->getMapFlag(MF_PVP_NOGUILD)) && s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild))) && (!mapdata->getMapFlag(MF_BATTLEGROUND) || sbg_id == tbg_id) )
+			if( mapdata->getMapFlag(MF_BATTLEGROUND) && sbg_id && sbg_id == tbg_id )
+				state |= BCT_GUILD; // On Battleground, same team works like Guild
+			//if( !(mapdata->getMapFlag(MF_PVP) && mapdata->getMapFlag(MF_PVP_NOGUILD)) && s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild))) && (!mapdata->getMapFlag(MF_BATTLEGROUND) || sbg_id == tbg_id) )
+			else if( !(mapdata->getMapFlag(MF_PVP) && mapdata->getMapFlag(MF_PVP_NOGUILD)) && s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild) /*&& !map[m].flag.gvg_noalliance*/ ))  && !mapdata->getMapFlag(MF_BATTLEGROUND) )	
 				state |= BCT_GUILD;
 			else
 				state |= BCT_ENEMY;
@@ -11704,7 +11713,7 @@ static const struct _battle_data {
 	{ "client_limit_unit_lv",               &battle_config.client_limit_unit_lv,            0,      0,      BL_ALL,         },
 	{ "land_protector_behavior",            &battle_config.land_protector_behavior,         0,      0,      1,              },
 	{ "npc_emotion_behavior",               &battle_config.npc_emotion_behavior,            0,      0,      1,              },
-// BattleGround Settings
+	// BattleGround Settings
 	{ "bg_update_interval",                 &battle_config.bg_update_interval,              1000,   100,    INT_MAX,        },
 	{ "bg_short_attack_damage_rate",        &battle_config.bg_short_damage_rate,            80,     0,      INT_MAX,        },
 	{ "bg_long_attack_damage_rate",         &battle_config.bg_long_damage_rate,             80,     0,      INT_MAX,        },
@@ -11712,7 +11721,17 @@ static const struct _battle_data {
 	{ "bg_magic_attack_damage_rate",        &battle_config.bg_magic_damage_rate,            60,     0,      INT_MAX,        },
 	{ "bg_misc_attack_damage_rate",         &battle_config.bg_misc_damage_rate,             60,     0,      INT_MAX,        },
 	{ "bg_flee_penalty",                    &battle_config.bg_flee_penalty,                 20,     0,      INT_MAX,        },
-// rAthena
+ 	/* eAmod BG */
+ 	{ "bg_idle_announce",                   &battle_config.bg_idle_announce,                0,      0,      INT_MAX,        },
+ 	{ "bg_idle_autokick",                   &battle_config.bg_idle_autokick,                0,      0,      INT_MAX,        },
+ 	{ "bg_reserved_char_id",                &battle_config.bg_reserved_char_id,             999996, 0,      INT_MAX,        },
+ 	{ "bg_items_on_pvp",                    &battle_config.bg_items_on_pvp,                 1,      0,      1,              },
+ 	{ "bg_reward_rates",                    &battle_config.bg_reward_rates,                 100,    0,      INT_MAX,        },
+ 	{ "bg_reportafk_leaderonly",            &battle_config.bg_reportafk_leaderonly,         1,      0,      1,              },
+ 	{ "bg_queue2team_balanced",             &battle_config.bg_queue2team_balanced,          1,      0,      1,              },
+ 	{ "bg_logincount_check",                &battle_config.bg_logincount_check,             1,      0,      1,              },
+ 	{ "bg_queue_onlytowns",                 &battle_config.bg_queue_onlytowns,              1,      0,      1,              },
+	// rAthena
 	{ "max_third_parameter",				&battle_config.max_third_parameter,				135,	10,		SHRT_MAX,		},
 	{ "max_baby_third_parameter",			&battle_config.max_baby_third_parameter,		108,	10,		SHRT_MAX,		},
 	{ "max_trans_parameter",				&battle_config.max_trans_parameter,				99,		10,		SHRT_MAX,		},

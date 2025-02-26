@@ -6853,7 +6853,7 @@ enum e_setpos pc_setpos(map_session_data* sd, uint16 mapindex, int32 x, int32 y,
 		}
 
 		if (sd->bg_id && mapdata && !mapdata->getMapFlag(MF_BATTLEGROUND)) // Moving to a map that isn't a Battlegrounds
-			bg_team_leave(sd, false, true);
+			bg_team_leave(sd, false, true, 0);
 
 		sd->state.pmap = sd->bl.m;
 		if (sc != nullptr && !sc->empty()) { // Cancel some map related stuff.
@@ -6929,7 +6929,7 @@ enum e_setpos pc_setpos(map_session_data* sd, uint16 mapindex, int32 x, int32 y,
 		}
 
 		if (sd->bg_id) // Switching map servers, remove from bg
-			bg_team_leave(sd, false, true);
+			bg_team_leave(sd, false, true, 0);
 
 		if (sd->state.vending) // Stop vending
 			vending_closevending(sd);

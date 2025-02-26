@@ -21315,7 +21315,7 @@ BUILDIN_FUNC(bg_leave)
 	if (!strcmp(script_getfuncname(st), "bg_desert"))
 		deserter = true;
 
-	bg_team_leave(sd, false, deserter);
+	bg_team_leave(sd, false, deserter, 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 

@@ -31,6 +31,7 @@
 #include "achievement.hpp"
 #include "battle.hpp"
 #include "buyingstore.hpp"
+#include "battleground.hpp"
 #include "channel.hpp"
 #include "chat.hpp"
 #include "chrif.hpp"

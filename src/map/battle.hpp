@@ -540,6 +540,17 @@ struct Battle_Config
 	int32 bg_magic_damage_rate;
 	int32 bg_misc_damage_rate;
 	int32 bg_flee_penalty;
+	
+	// eAmod BG
+ 	int bg_idle_announce;
+ 	int bg_idle_autokick;
+ 	int bg_reserved_char_id;
+ 	int bg_items_on_pvp;
+ 	int bg_reward_rates;
+ 	int bg_reportafk_leaderonly;
+ 	int bg_queue2team_balanced;
+ 	int bg_logincount_check;
+ 	int bg_queue_onlytowns;
 
 	// rAthena
 	int32 max_third_parameter;

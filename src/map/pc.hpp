@@ -457,6 +457,7 @@ public:
 		bool roulette_open;
 		t_itemid item_reform;
 		uint64 item_enchant_index;
+		int32 bg_afk;
 	} state;
 	struct {
 		unsigned char no_weapon_damage, no_magic_damage, no_misc_damage;
@@ -834,7 +835,8 @@ public:
 	const char* debug_func;
 
 	// Battlegrounds queue system [MasterOfMuppets]
-	int32 bg_id, bg_queue_id;
+	int32 bg_id, bg_queue_id, bg_kills;
+	int32 bmaster_flag;
 	int32 tid_queue_active; ///< Timer ID associated with players joining an active BG
 
 #ifdef SECURE_NPCTIMEOUT
