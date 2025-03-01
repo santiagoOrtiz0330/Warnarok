@@ -55,6 +55,21 @@ struct s_battleground_team {
 		bg_id_var; ///< Team NPC variable name
 };
 
+struct queue_member {
+	int position;
+	struct map_session_data *sd;
+	struct queue_member *next;
+};
+
+struct queue_data {
+	unsigned int q_id;
+	int min_level, users;
+	struct queue_member *first, *last;
+	char queue_name[50], join_event[EVENT_NAME_LENGTH];
+};
+
+extern struct guild bg_guild[];
+
 struct guild {
 	char name[NAME_LENGTH];
 	char master[NAME_LENGTH];

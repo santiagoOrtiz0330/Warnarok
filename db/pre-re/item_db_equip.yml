@@ -29867,6 +29867,7 @@ Body:
     Type: Armor
     Buy: 20
     Defense: 1
+    Slots: 1
     Locations:
       Head_Mid: true
     ArmorLevel: 1
@@ -31975,6 +31976,7 @@ Body:
     Buy: 20
     Weight: 200
     Defense: 1
+    Slots: 1
     Locations:
       Head_Mid: true
     ArmorLevel: 1
@@ -41168,3 +41170,56 @@ Body:
     ArmorLevel: 1
     EquipLevelMin: 10
     View: 1883
+  - Id: 31503
+    AegisName: Black_Tail_Ribbon
+    Name: Black Tail Ribbon
+    Type: Armor
+    Buy: 20
+    Weight: 100
+    Slots: 1
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    EquipLevelMin: 10
+    Refineable: true
+    View: 642
+    Script: |
+      bonus bMdef,5;
+      bonus bLongAtkDef,10;
+      bonus2 bSubEle,Ele_Neutral,5;
+  - Id: 31504
+    AegisName: Amistr_Cap
+    Name: Amistr Cap
+    Type: Armor
+    Buy: 20
+    Weight: 500
+    Defense: 4
+    Slots: 1
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    EquipLevelMin: 1
+    Refineable: true
+    View: 643
+    Trade:
+      NoDrop: true
+    Script: |
+      bonus bVit,1+(getrefine()/2);
+      bonus5 bAutoSpell,"KN_PIERCE",5,10,BF_WEAPON,1;
+  - Id: 31505
+    AegisName: Cow_Hat
+    Name: Cow Hat
+    Type: Armor
+    Buy: 20
+    Weight: 300
+    Defense: 4
+    Slots: 1
+    Locations:
+      Head_Top: true
+    ArmorLevel: 1
+    EquipLevelMin: 1
+    Refineable: true
+    View: 799
+    Script: |
+      bonus bDex,2;
+      bonus2 bAddMonsterDropItem,519,100;

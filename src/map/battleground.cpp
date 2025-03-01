@@ -1018,7 +1018,6 @@ void bg_guild_build_data(void)
 
 void bg_team_getitem(int bg_id, int nameid, int amount)
 {
-	struct battleground_data *bg;
 	struct map_session_data *sd;
 	struct item_data *id;
 	struct item it;
@@ -1026,7 +1025,7 @@ void bg_team_getitem(int bg_id, int nameid, int amount)
 
 	std::shared_ptr<s_battleground_data> bgteam = util::umap_find(bg_team_db, sd->bg_id);
 
-	if( amount < 1 || bgteam == NULL || (id = itemdb_exists(nameid)) == NULL )
+	if( amount < 1 || !bgteam || !item_db.exists(nameid))
 		return;
 	if( nameid != 7828 && nameid != 7829 && nameid != 7773 )
 		return;
@@ -1039,12 +1038,111 @@ void bg_team_getitem(int bg_id, int nameid, int amount)
 
 	for( j = 0; j < MAX_BG_MEMBERS; j++ )
 	{
-		if( (sd = bg->members[j].sd) == NULL )
+		if( (sd = bgteam->members[j].sd) == NULL )
 			continue;
 
 		if( (flag = pc_additem(sd,&it,amount,LOG_TYPE_SCRIPT)) )
 			clif_additem(sd,0,0,flag);
 	}
+}
+
+void bg_team_get_kafrapoints(int bg_id, int amount)
+{
+	struct map_session_data *sd;
+	int i;
+	std::shared_ptr<s_battleground_data> bgteam = util::umap_find(bg_team_db, sd->bg_id);
+	
+	if(!bgteam)
+		return;
+
+	if( battle_config.bg_reward_rates != 100 )
+		amount = amount * battle_config.bg_reward_rates / 100;
+
+	for( i = 0; i < MAX_BG_MEMBERS; i++ )
+	{
+		if( (sd = bgteam->members[i].sd) == NULL )
+			continue;
+		pc_getcash(sd,0,amount,LOG_TYPE_NPC );
+	}
+}
+
+/* ==============================================================
+   bg_arena (0 EoS | 1 Boss | 2 TI | 3 CTF | 4 TD | 5 SC | 6 CON)
+   bg_result (0 Won | 1 Tie | 2 Lost)
+   ============================================================== */
+void bg_team_rewards(int bg_id, int nameid, int amount, int kafrapoints, int quest_id, const char *var, int add_value, int bg_arena, int bg_result)
+{
+	struct map_session_data *sd;
+	struct item_data *id;
+	struct item it;
+	int j, flag;
+
+	std::shared_ptr<s_battleground_data> bgteam = util::umap_find(bg_team_db, sd->bg_id);
+
+	if( amount < 1 || !bgteam || !item_db.exists(nameid))
+		return;
+
+	if( battle_config.bg_reward_rates != 100 )
+	{ // BG Reward Rates
+		amount = amount * battle_config.bg_reward_rates / 100;
+		kafrapoints = kafrapoints * battle_config.bg_reward_rates / 100;
+	}
+
+	bg_result = cap_value(bg_result,0,2);
+	memset(&it,0,sizeof(it));
+	if( nameid == 7828 || nameid == 7829 || nameid == 7773 )
+	{
+		it.nameid = nameid;
+		it.identify = 1;
+	}
+	else nameid = 0;
+
+	for( j = 0; j < MAX_BG_MEMBERS; j++ )
+	{
+		if( (sd = bgteam->members[j].sd) == NULL )
+			continue;
+
+		if( quest_id ) quest_add(sd,quest_id);
+		
+		//pc_setglobalreg(sd,var,pc_readglobalreg(sd,var) + add_value);
+
+		if( kafrapoints > 0 )
+			pc_getcash(sd,0,kafrapoints,LOG_TYPE_NPC );
+
+		if( nameid && amount > 0 )
+		{
+			if( (flag = pc_additem(sd,&it,amount,LOG_TYPE_SCRIPT)) )
+				clif_additem(sd,0,0,flag);
+		}
+	}
+}
+
+// ====================================================================
+// Battleground Queue System
+// ====================================================================
+
+struct queue_data* queue_search(int q_id)
+{ // Search a Queue using q_id
+	if( !q_id ) return NULL;
+	return (struct queue_data *)idb_get(queue_db, q_id);
+}
+
+int queue_create(const char* queue_name, const char* join_event, int min_level)
+{
+	struct queue_data *qd;
+	if( ++queue_counter <= 0 ) queue_counter = 1;
+
+	CREATE(qd, struct queue_data, 1);
+	qd->q_id = queue_counter;
+	safestrncpy(qd->queue_name, queue_name, sizeof(qd->queue_name));
+	safestrncpy(qd->join_event, join_event, sizeof(qd->join_event));
+	qd->first = qd->last = NULL; // First and Last Queue Members
+	qd->users = 0;
+	qd->min_level = min_level;
+
+	idb_put(queue_db, queue_counter, qd);
+
+	return qd->q_id;
 }
 
 /**

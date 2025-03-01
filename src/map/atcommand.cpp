@@ -245,6 +245,108 @@ static const char* atcommand_help_string( const char* command ){
 	return info->help.c_str();
 }
 
+/*==========================================
+ * Battleground Leader Commands
+ *------------------------------------------*/
+ACMD_FUNC(order)
+{
+	nullpo_retr(-1,sd);
+	if( !message || !*message )
+	{
+		clif_displaymessage(fd, "Please, enter a message (usage: @order <message>).");
+		return -1;
+	}
+
+	if( map[sd->bl.m].flag.battleground )
+	{
+		if( !sd->bmaster_flag )
+		{
+			clif_displaymessage(fd, "This command is reserved for Team Leaders Only.");
+			return -1;
+		}
+		clif_broadcast2(&sd->bl, message, (int)strlen(message)+1, sd->bmaster_flag->color, 0x190, 20, 0, 0, BG);
+	}
+	else
+	{
+		if( !sd->state.gmaster_flag )
+		{
+			clif_displaymessage(fd, "This command is reserved for Guild Leaders Only.");
+			return -1;
+		}
+		clif_broadcast2(&sd->bl, message, (int)strlen(message)+1, 0xFF0000, 0x190, 20, 0, 0, GUILD);
+	}
+
+	return 0;
+}
+
+ACMD_FUNC(leader)
+{
+	struct map_session_data *pl_sd;
+	nullpo_retr(-1,sd);
+	if( !sd->bmaster_flag )
+		clif_displaymessage(fd, "This command is reserved for Team Leaders Only.");
+	else if( sd->ud.skilltimer != INVALID_TIMER )
+		clif_displaymessage(fd, "Command not allow while casting a skill.");
+	else if( !message || !*message )
+		clif_displaymessage(fd, "Please, enter the new Leader name (usage: @leader <name>).");
+	else if( (pl_sd = map_nick2sd((char *)message)) == NULL )
+		clif_displaymessage(fd, "Character not found"); // Character not found.
+	else if( sd->bg_id != pl_sd->bg_id )
+		clif_displaymessage(fd, "Destination Player is not in your Team.");
+	else if( sd == pl_sd )
+		clif_displaymessage(fd, "You are already the Team Leader.");
+	else
+	{ // Everytest OK!
+		sprintf(atcmd_output, "Team Leader transfered to [%s]", pl_sd->status.name);
+		clif_broadcast2(&sd->bl, atcmd_output, (int)strlen(atcmd_output)+1, sd->bmaster_flag->color, 0x190, 20, 0, 0, BG);
+
+		sd->bmaster_flag->leader_char_id = pl_sd->status.char_id;
+		pl_sd->bmaster_flag = sd->bmaster_flag;
+		sd->bmaster_flag = NULL;
+
+		clif_charnameupdate(sd);
+		clif_charnameupdate(pl_sd);
+		return 0;
+	}
+	return -1;
+}
+
+ACMD_FUNC(reportafk)
+{
+	struct map_session_data *pl_sd;
+	nullpo_retr(-1,sd);
+	if( !sd->bg_id )
+		clif_displaymessage(fd, "This command is reserved for Battleground Only.");
+	else if( !sd->bmaster_flag && battle_config.bg_reportafk_leaderonly )
+		clif_displaymessage(fd, "This command is reserved for Team Leaders Only.");
+	else if( !message || !*message )
+		clif_displaymessage(fd, "Please, enter the character name (usage: @reportafk <name>).");
+	else if( (pl_sd = map_nick2sd((char *)message)) == NULL )
+		clif_displaymessage(fd, "Character not Found"); // Character not found.
+	else if( sd->bg_id != pl_sd->bg_id )
+		clif_displaymessage(fd, "Destination Player is not in your Team.");
+	else if( sd == pl_sd )
+		clif_displaymessage(fd, "You cannot kick yourself.");
+	else if( pl_sd->state.bg_afk == 0 )
+		clif_displaymessage(fd, "The player is not AFK on this Battleground.");
+	else
+	{ // Everytest OK!
+		struct battleground_data *bg;
+		if( (bg = bg_team_search(sd->bg_id)) == NULL )
+			return -1;
+
+		bg_team_leave(pl_sd,2);
+		clif_displaymessage(pl_sd->fd, "You have been kicked from Battleground because of your AFK status.");
+		pc_setpos(pl_sd,pl_sd->status.save_point.map,pl_sd->status.save_point.x,pl_sd->status.save_point.y,3);
+
+		sprintf(atcmd_output, "- AFK [%s] Kicked -", pl_sd->status.name);
+		clif_broadcast2(&sd->bl, atcmd_output, (int)strlen(atcmd_output)+1, bg->color, 0x190, 20, 0, 0, BG);
+		return 0;
+	}
+	return -1;
+}
+
+
 ACMD_FUNC(townskill) {
     if (!sd) return false;
 
@@ -4478,9 +4580,9 @@ ACMD_FUNC(reloadscript){
 
 	for (auto &bg : bg_queues) {
 		for (auto &bg_sd : bg->teama_members)
-			bg_team_leave(bg_sd, false, false); // Kick Team A from battlegrounds
+			bg_team_leave(bg_sd, false, false, 0); // Kick Team A from battlegrounds
 		for (auto &bg_sd : bg->teamb_members)
-			bg_team_leave(bg_sd, false, false); // Kick Team B from battlegrounds
+			bg_team_leave(bg_sd, false, false, 0); // Kick Team B from battlegrounds
 		bg_queue_clear(bg, true);
 	}
 
@@ -11398,6 +11500,12 @@ void atcommand_basecommands(void) {
 	 **/
 	AtCommandInfo atcommand_base[] = {
 #include <custom/atcommand_def.inc>
+		/**
+		* BG eAmod
+		**/
+		ACMD_DEF(order),
+		ACMD_DEF(leader),
+		ACMD_DEF(reportafk),
 		ACMD_DEF(townskill),
 		ACMD_DEF(myinfo),
 		ACMD_DEF(scanarea),
