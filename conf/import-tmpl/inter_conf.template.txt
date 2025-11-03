@@ -1,0 +1,37 @@
+// Copy to conf/import/inter_conf.txt and replace with real credentials
+login_server_ip: YOUR_DB_HOST
+login_server_port: 3306
+login_server_id: YOUR_DB_USER
+login_server_pw: YOUR_DB_PASSWORD
+login_server_db: ragnarok
+
+ipban_db_ip: YOUR_DB_HOST
+ipban_db_port: 3306
+ipban_db_id: YOUR_DB_USER
+ipban_db_pw: YOUR_DB_PASSWORD
+ipban_db_db: ragnarok
+
+char_server_ip: YOUR_DB_HOST
+char_server_port: 3306
+char_server_id: YOUR_DB_USER
+char_server_pw: YOUR_DB_PASSWORD
+char_server_db: ragnarok
+
+map_server_ip: YOUR_DB_HOST
+map_server_port: 3306
+map_server_id: YOUR_DB_USER
+map_server_pw: YOUR_DB_PASSWORD
+map_server_db: ragnarok
+
+web_server_ip: YOUR_DB_HOST
+web_server_port: 3306
+web_server_id: YOUR_DB_USER
+web_server_pw: YOUR_DB_PASSWORD
+web_server_db: ragnarok
+
+log_db_ip: YOUR_DB_HOST
+log_db_port: 3306
+log_db_id: YOUR_DB_USER
+log_db_pw: YOUR_DB_PASSWORD
+log_db_db: ragnarok
+

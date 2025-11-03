@@ -154,3 +154,4 @@ Thumbs.db
 generated
 # Local environment secrets
 .env
+conf/import/inter_conf.txt

@@ -10,6 +10,11 @@ This guide captures the manual steps needed to launch the rAthena stack on Railw
    ```
 2. Replace every `CHANGE_ME` placeholder with the secret values exposed by Railway.
 3. If you prefer to keep a dedicated logging schema, set `RATHENA_LOG_DB_NAME=log` in `.env` and create the schema (`CREATE DATABASE IF NOT EXISTS log;`). Otherwise, the default matches the main `MYSQL_DATABASE`, so no extra schema is required.
+4. For bare-metal runs (without Docker), also copy the SQL config template and fill it in:
+   ```bash
+   cp conf/import-tmpl/inter_conf.template.txt conf/import/inter_conf.txt
+   ```
+   Replace `YOUR_DB_*` with the same credentials you placed in `.env`.
 
 > `.env` is now ignored by git, so your secrets stay local by default.
 
