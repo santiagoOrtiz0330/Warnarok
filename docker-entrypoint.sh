@@ -12,8 +12,14 @@ echo "=== Railway Configuration Debug ==="
 echo "MYSQL_HOST=${MYSQL_HOST:-not set}"
 echo "MYSQL_PORT=${MYSQL_PORT:-not set}"
 echo "MYSQL_USER=${MYSQL_USER:-not set}"
+echo "MYSQL_PASSWORD=${MYSQL_PASSWORD:-not set (hidden)}"
 echo "MYSQL_DATABASE=${MYSQL_DATABASE:-not set}"
 echo "===================================="
+echo "=== Resolved Variables ==="
+echo "LOGIN_DB_HOST will be: ${RATHENA_LOGIN_DB_HOST:-${MYSQL_HOST:-127.0.0.1}}"
+echo "LOGIN_DB_PORT will be: ${RATHENA_LOGIN_DB_PORT:-${MYSQL_PORT:-3306}}"
+echo "LOGIN_DB_USER will be: ${RATHENA_LOGIN_DB_USER:-${MYSQL_USER:-ragnarok}}"
+echo "=========================="
 
 # Resolve SQL credentials with sensible fallbacks.
 LOGIN_DB_HOST=${RATHENA_LOGIN_DB_HOST:-${MYSQL_HOST:-127.0.0.1}}
