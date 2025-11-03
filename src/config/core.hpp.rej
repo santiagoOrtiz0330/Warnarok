@@ -1,0 +1,10 @@
+diff a/src/config/core.hpp b/src/config/core.hpp	(rejected hunks)
+@@ -99,4 +99,8 @@
+ 
+ #include "../custom/defines_post.hpp"
+ 
++/// Battleground Extended [Grenat]
++/// Comment to disable Battleground Extended
++#define BGEXTENDED
++
+ #endif /* CONFIG_CORE_HPP */

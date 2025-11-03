@@ -61,6 +61,11 @@ Body:
     Level: 0
     Commands:
       # Informational commands
+      reportafk: true
+      order: true
+      listenbg: true
+      bgskill: true
+      leader: true
       commands: true
       charcommands: true
       help: true

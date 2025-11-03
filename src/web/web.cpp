@@ -257,7 +257,8 @@ int32 inter_config_read(const char* cfgName)
 
 
 void web_set_defaults() {
-	web_config.web_ip = "192.168.0.107";
+	// TODO : IP local del servidor EJ; 192.168.0.109
+	web_config.web_ip = "127.0.0.1";
 	web_config.web_port = 8888;
 	safestrncpy(web_config.webconf_name, "conf/web_athena.conf", sizeof(web_config.webconf_name));
 	safestrncpy(web_config.msgconf_name, "conf/msg_conf/web_msg.conf", sizeof(web_config.msgconf_name));

@@ -1,0 +1,13 @@
+diff a/conf/groups.yml b/conf/groups.yml	(rejected hunks)
+@@ -61,6 +61,11 @@ Body:
+     Level: 0
+     Commands:
+       # Informational commands
++      reportafk: true
++      order: true
++      listenbg: true
++      bgskill: true
++      leader: true
+       commands: true
+       charcommands: true
+       help: true

@@ -1,0 +1,16 @@
+diff a/src/map/script.hpp b/src/map/script.hpp	(rejected hunks)
+@@ -379,6 +379,14 @@ enum monsterinfo_types {
+ 	MOB_MVPEXP
+ };
+ 
++#ifdef BGEXTENDED
++enum npcinfo_types {
++	NPC_MAP = 0,
++	NPC_X,
++	NPC_Y,
++};
++#endif
++
+ enum petinfo_types {
+ 	PETINFO_ID = 0,
+ 	PETINFO_CLASS,

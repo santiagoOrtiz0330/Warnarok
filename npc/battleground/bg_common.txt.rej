@@ -1,0 +1,443 @@
+diff a/npc/battleground/bg_common.txt b/npc/battleground/bg_common.txt	(rejected hunks)
+@@ -1,101 +1,356 @@
+-//===== rAthena Script ======================================= 
+-//= BattleGround System - Common NPCs
+-//===== By: ================================================== 
+-//= ????, L0ne_W0lf
+-//===== Current Version: ===================================== 
+-//= 1.5
+-//===== Compatible With: ===================================== 
+-//= rAthena Project
+-//===== Description: ========================================= 
+-//= [Official Conversion]
+-//= Battleground NPCs:
+-//= - Generals and Aides
+-//= - Battleground Warper
+-//= - Kafra and Repairman.
+-//= - GM Management NPC
+-//= - Badge Exchanger (Tierra and Flavius)
+-//===== Additional Comments: ================================= 
+-//= 1.0 First Version.
+-//= 1.1 Updated several NPCs to Official.
+-//= 1.2 Updated Repairman NPC
+-//= 1.3 Optimized "Erundek" NPC. [Euphy]
+-//= 1.4 Added GM management function. [Euphy]
+-//= 1.5 Added VIP features and created a reward function. [Euphy]
++//===== rAthena Script =======================================
++//= Battleground Extended +
++//===== By: ==================================================
++//= eAmod / Grenat
++//===== Description: =========================================
++//= Battleground Extended + scripts.
++//===== Additional Comments: =================================
++//= Adaptation for rAthena 2020.
++//= This is a free release.
++//= Please do NOT take ownership.
++//= The original author will always stay eAmod,
++//= It would be a disgrace claiming it's yours and making
++//= money out of it. [Grenat]
++//= 1.1 - Ranking system added [Grenat]
++//= 1.2 - @bginfo listing all BGs currently going on [Grenat]
++//= 1.3 - Rotation system added [Grenat]
++//= 1.4 - Small fixes on rewards and pckillevent [Grenat]
+ //============================================================
+ 
+-// Generals
+ //============================================================
+-bat_room,161,158,3	script	Gen. Guillaume's Aide#01	419,{ end; }
+-bat_room,161,160,3	script	Gen. Guillaume's Aide#03	419,{ end; }
++// = Map Flags
++//============================================================
++bat_room	mapflag	nomemo
++bat_room	mapflag	nowarpto
++bat_room	mapflag	nobranch
++bat_room	mapflag	nopenalty
++bat_room	mapflag	noteleport
++bat_room	mapflag	nosave	SavePoint
+ 
+-bat_room,160,141,3	script	Prince Croix	416,{
+-	cutin "bat_crua1",2;
+-	mes "[Prince Croix]";
+-	mes "Wise adventurer, why don't you lend us your power for victory?";
++
++//============================================================
++// = Configuration
++//============================================================
++-	script	BG_config	-1,{
++	end;
++
++	//=======================================================
++	//= Main Config
++	//=======================================================
++OnInit:
++	set .HappyHourRates, getbattleflag("bg_reward_rates") + 60;	//Happy Hour +60% rewards
++	bindatcmd "joinbg",strnpcinfo(3)+"::OnAtcommand1";		//Join Battle Room
++	bindatcmd "leavebg",strnpcinfo(3)+"::OnAtcommand2";		//Leave Battle Room
++	bindatcmd "bginfo",strnpcinfo(3)+"::OnAtcommand3";		//Knowing which BGs are running and how many players
++	bindatcmd "bghappyhourstart","BG_config::OnClock1800",99,99;	//Start Happy Hour
++	bindatcmd "bghappyhourstop","BG_config::OnClock1900",99,99;	//Stop Happy Hour
++	bindatcmd "startbg","BG_config::OnStart",99,99;		//Start a Battleground
++	end;
++
++	//=======================================================
++	//= BG Rotation
++	//=======================================================
++OnStart:
++	awake "BG_config";
++	mes "Select a Battleground.";
++	.@type = select("- Capture the Flag:- Death Match:- Stone Control:- Bossnia:- Domination:- Eye of Storm:- Double Inferno:- Conquest:- Rush");
++	close2;
++OnClock0030: OnClock0130: OnClock0230: OnClock0330: OnClock0430: OnClock0530: OnClock0630: OnClock0730: OnClock0830: OnClock0930: OnClock1030: OnClock1130:
++OnClock1230: OnClock1330: OnClock1430: OnClock1530: OnClock1630: OnClock1730: OnClock1830: OnClock1930: OnClock2030: OnClock2130: OnClock2230: OnClock2330:
++	if(!.@type)
++		.@type = rand(1,9);
++	do {
++		switch (.@type) {
++			case 1: .@currentbg$ = "Capture The Flag"; break;
++			case 2: .@currentbg$ = "Death Match"; break;
++			case 3: .@currentbg$ = "Stone Control"; break;
++			case 4: .@currentbg$ = "Bossnia"; break;
++			case 5: .@currentbg$ = "Domination"; break;
++			case 6: .@currentbg$ = "Eye of Storm"; break;
++			case 7: .@currentbg$ = "Double Inferno"; break;
++			case 8: .@currentbg$ = "Conquest"; break;
++			case 9: .@currentbg$ = "Rush"; break;
++		}
++	} while ( $@currentbg$ != "" && $@currentbg$ == .@currentbg$);
++	for(.@i = 3; .@i > 0; .@i--) {
++		announce "[Battleground]: "+.@currentbg$+" will start in "+.@i+" minute"+((.@i > 1)?"s":"")+".",bc_all,0xccff00;
++		sleep 60000;
++	}
++	$@currentbg$ = .@currentbg$;
++	bg_create2 ((.@type < 7)?"() ":"")+.@currentbg$;
++	end;
++
++	//=======================================================
++	//= BG Happy Hours
++	//=======================================================
++OnClock1000:
++OnClock1200:
++OnClock1800:
++OnClock2000:
++	announce "Battleground Happy Hour has begun",0,0x00FF00;
++	setbattleflag "bg_reward_rates",.HappyHourRates; // Happy hour Rate
++	end;
++OnClock1100:
++OnClock1300:
++OnClock1900:
++OnClock2100:
++	announce "Battleground Happy Hour is over",0,0x00BFFF;
++	setbattleflag "bg_reward_rates",getbattleflag("bg_reward_rates"); // Back to Normal Rates
++	end;
++
++	//==================================================
++	//= Battleground Kill Count
++	//==================================================
++OnPCKillEvent:
++	if(bg_teamid() >= 0) {
++		bg_kill getcharid(3);
++		callfunc "check_bg_get_rank",strcharinfo(3),convertpcinfo(killedrid,CPC_CHAR);
++	}
++	end;
++
++	//=======================================================
++	// = Commands:
++	// NO Need to TP to the battlefield.
++	// BG Queue System is doing it with Join_Active_Event (db/battleground.yml)
++	//=======================================================
++OnAtcommand1:
++	if($@currentbg$ != "")
++		bg_join((bg_get_data($@currentbgteam1,1) > bg_get_data($@currentbgteam2,1)) ? $@currentbgteam2 : $@currentbgteam1);
++	else
++		dispbottom "No battleground is currently running.";
++	end;
++OnAtcommand2:
++	if (getbattleflag("feature.bgqueue"))
++		bg_desert;
++	else
++		bg_leave;
++	end;
++OnAtcommand3:
++	dispbottom "Battleground Extended : (Score: Blue/Red)";
++	if($@BG10) dispbottom "[Capture the Flag] : ON - "+getmapusers("bat_b02")+" Player(s) (Score: "+$@score_capture_blue+"/"+$@score_capture_red+" - "+(900-((getnpctimer(0,"Flavius_CTF")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_b02")) dispbottom "[Capture the Flag] : OFF - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Death Match] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG14) dispbottom "[Death Match] : ON - "+getmapusers("bat_b03")+" Player(s) (Score: "+$@score_deathmatch_blue+"/"+$@score_deathmatch_red+" - "+(900-((getnpctimer(0,"Flavius_TD")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_b03")) dispbottom "[Death Match] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Death Match] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG12) dispbottom "[Stone Control] : ON - "+getmapusers("bat_b04")+" Player(s) (Score: "+$@score_stonecontrol_blue+"/"+$@score_stonecontrol_red+" - "+(900-((getnpctimer(0,"Flavius_SC")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_b04")) dispbottom "[Stone Control] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Stone Control] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@FlaviusBG1) dispbottom "[Flavius] : ON - "+getmapusers("bat_b01")+" Player(s) (Score: "+$@Croix_ScoreBG1+"/"+$@Guill_ScoreBG1+" - "+(1900-((getnpctimer(0,"countdown#bat_b01")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_b01")) dispbottom "[Flavius] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Flavius] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@KvM02BG) dispbottom "[KVM] : ON - "+getmapusers("bat_c02")+" Player(s) ("+(360-((getnpctimer(0,"KvM02_BG")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_c02")) dispbottom "[KVM] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[KVM] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@TierraBG1) dispbottom "[Tierra] : ON - "+getmapusers("bat_a01")+" Player(s) ("+(1830-((getnpctimer(0,"countdown#bat_a01")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_a01")) dispbottom "[Tierra] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Tierra] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG16) dispbottom "[Bossnia] : ON - "+getmapusers("bat_a03")+" Player(s) (Score: "+$@score_bossnia_blue+"/"+$@score_bossnia_red+" - "+(900-((getnpctimer(0,"Tierra_Boss")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bat_a03")) dispbottom "[Bossnia] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Bossnia] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG17) dispbottom "[Domination] : ON - "+getmapusers("bat_a04")+" Player(s) (Score: "+$@score_domination_blue+"/"+$@score_domination_red+")",0xccff00;
++	else if(.@n = getqueuecount("bat_a04")) dispbottom "[Domination] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Domination] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG18) dispbottom "[Eye of Storm] : ON - "+getmapusers("bat_a02")+" Player(s) (Score: "+$@score_eyeofstorm_blue+"/"+$@score_eyeofstorm_red+")",0xccff00;
++	else if(.@n = getqueuecount("bat_a02")) dispbottom "[Eye of Storm] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Eye of Storm] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG15) dispbottom "[Rush] : ON - "+getmapusers("rush_cas01")+" Player(s) (Score: "+$@score_rush_blue+"/"+$@score_rush_red+" - "+(420-((getnpctimer(0,"Rush")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("rush_cas01")) dispbottom "[Rush] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Rush] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG15a) dispbottom "[Rush] : ON - "+getmapusers("rush_cas02")+" Player(s) (Score: "+$@score_rush_blue1+"/"+$@score_rush_red1+" - "+(420-((getnpctimer(0,"Rush1")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("rush_cas02")) dispbottom "[Rush] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Rush] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG15b) dispbottom "[Rush] : ON - "+getmapusers("rush_cas03")+" Player(s) (Score: "+$@score_rush_blue2+"/"+$@score_rush_red2+" - "+(420-((getnpctimer(0,"Rush2")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("rush_cas03")) dispbottom "[Rush] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Rush] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG15c) dispbottom "[Rush] : ON - "+getmapusers("rush_cas04")+" Player(s) (Score: "+$@score_rush_blue3+"/"+$@score_rush_red3+" - "+(420-((getnpctimer(0,"Rush3")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("rush_cas04")) dispbottom "[Rush] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Rush] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG11) dispbottom "[Conquest] : ON - "+getmapusers("schg_cas06")+" Player(s) ("+(360-((getnpctimer(0,"Conquest")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("schg_cas06")) dispbottom "[Conquest] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Conquest] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG11b) dispbottom "[Conquest] : ON - "+getmapusers("schg_cas07")+" Player(s) ("+(360-((getnpctimer(0,"Conquest1")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("schg_cas07")) dispbottom "[Conquest] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Conquest] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG11c) dispbottom "[Conquest] : ON - "+getmapusers("schg_cas08")+" Player(s) ("+(360-((getnpctimer(0,"Conquest2")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("schg_cas08")) dispbottom "[Conquest] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Conquest] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG11d) dispbottom "[Conquest] : ON - "+getmapusers("arug_cas06")+" Player(s) ("+(360-((getnpctimer(0,"Conquest3")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("arug_cas06")) dispbottom "[Conquest] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Conquest] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG11e) dispbottom "[Conquest] : ON - "+getmapusers("arug_cas07")+" Player(s) ("+(360-((getnpctimer(0,"Conquest4")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("arug_cas07")) dispbottom "[Conquest] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Conquest] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG11f) dispbottom "[Conquest] : ON - "+getmapusers("arug_cas08")+" Player(s) ("+(360-((getnpctimer(0,"Conquest5")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("arug_cas08")) dispbottom "[Conquest] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Conquest] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG19) dispbottom "[Double Inferno] : ON - "+getmapusers("region_8")+" Player(s) (Score: "+$@score_inferno_blue+"/"+$@score_inferno_red+" - "+(900-((getnpctimer(0,"Tierra_TI")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("region_8")) dispbottom "[Double Inferno] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Double Inferno] : OFF - 0 players on the waiting list.",0x9966cc;
++	if($@BG20) dispbottom "[Poring Ball] : ON - "+getmapusers("bg_ball")+" Player(s) (Score: "+$@score_poring_blue+"/"+$@score_poring_red+" - "+(900-((getnpctimer(0,"Poringball_Config")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bg_ball")) dispbottom "[Poring Ball] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Poring Ball] : OFF - 0 players on the waiting list.",0x9966cc;
++	if(getd("$@bomberman21")) dispbottom "[Bomberman Ice] : ON - "+getmapusers("bg_bomber")+" Player(s) (Score: "+$@score_bomber2_blue+"/"+$@score_bomber2_red+" - "+(320-((getnpctimer(0,"2Bomb#core")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bg_bomber")) dispbottom "[Bomberman Ice] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Bomberman Ice] : OFF - 0 players on the waiting list.",0x9966cc;
++	if(getd("$@bomberman31")) dispbottom "[Bomberman Village] : ON - "+getmapusers("bg_bomber2")+" Player(s) (Score: "+$@score_bomber3_blue+"/"+$@score_bomber3_red+" - "+(320-((getnpctimer(0,"3Bomb#core")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bg_bomber2")) dispbottom "[Bomberman Village] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Bomberman Village] : OFF - 0 players on the waiting list.",0x9966cc;
++	if(getd("$@bomberman11")) dispbottom "[Bomberman Cemetery] : ON - "+getmapusers("bomberman")+" Player(s) (Score: "+$@score_bomber1_blue+"/"+$@score_bomber1_red+" - "+(320-((getnpctimer(0,"1Bomb#core")/1000)))+" sec left)",0xccff00;
++	else if(.@n = getqueuecount("bomberman")) dispbottom "[Bomberman Cemetry] : In Progress - "+.@n+" Player(s) on the waiting list.",0xFFA500;
++	else dispbottom "[Bomberman Cemetry] : OFF - 0 players on the waiting list.",0x9966cc;
++	end;
++}
++
++//==================================================
++//= Battleground Kicked Out
++//==================================================
++-	script	OnPCLeaveBG	-1,{
++OnPCLeaveBG:
++	if(countitem("Blue_Skull")) delitem "Blue_Skull",countitem("Blue_Skull");
++	if(countitem("Red_Skull")) delitem "Red_Skull",countitem("Red_Skull");
++	if(countitem("Green_Skull")) delitem "Green_Skull",countitem("Green_Skull");
++	if(countitem("Bomb")) delitem "Bomb",countitem("Bomb");
++	if(countitem("Bomb_Kick")) delitem "Bomb_Kick",countitem("Bomb_Kick");
++	if(countitem("Fire_UP")) delitem "Fire_UP",countitem("Fire_UP");
++	if(countitem("Bomb_UP")) delitem "Bomb_UP",countitem("Bomb_UP");
++	if(countitem("Speed_UP")) delitem "Speed_UP",countitem("Speed_UP");
++	if(countitem("SKILL_SHOOT")) delitem "SKILL_SHOOT",countitem("SKILL_SHOOT");
++	if(countitem("SKILL_PUSH")) delitem "SKILL_PUSH",countitem("SKILL_PUSH");
++	set @BBM_spawn, 0; set @BBM_HIT, 0; set @BBM_INVINCIBLE, 0; set @BBM_HIT, 0; set @ZONE_EXPLOSION, 0; set @BBM_DELAY, 0;
++//	sc_end SC_TIMERDOWN;
++	cutin "",255;
++	setpcblock PCBLOCK_ATTACK,0;
++	atcommand "@size 0";
++	end;
++}
++
++//============================================================
++//= Recruiter/Information scripts.
++//============================================================
++-	script	BG_Register	FAKE_NPC,{
++	mes "[^FFA500Battle Recruiter^000000]";
++	mes "This is the Battleground Information service.";
+ 	next;
+-	switch(select("What's the reason for the Battle?:Tell me about General Guillaume")) {
++	if(strcharinfo(4) == "prontera") .@warp$ = "Warp to Battle Room";
++	switch(select("^FFA500Battleground Arenas^000000",.@warp$)) {
+ 	case 1:
+-		cutin "bat_crua2",2;
+-		mes "[Prince Croix]";
+-		mes "Maroll's great king, Marcel Marollo VII, is very sick lately.";
+-		mes "His Majesty has declared that he will be leaving the future of Maroll to me or the 3rd prince, General Guillaume.";
++		mes "[^FFA500Battle Recruiter^000000]";
++		mes "Battlegrounds Arena are different kinds of games where Teams fight for victory.";
+ 		next;
+-		mes "[Prince Croix]";
+-		mes "General Guillaume may have an advantage in this battle as he is the great general of Maroll, but that doesn't automatically mean he'll win.";
+-		mes "I want to win this battle so that I can bring prosperity to the people of Maroll. They've suffered enough from war...";
+-		next;
+-		switch(select("Yes, I want to join you.:End Conversation")) {
+-		case 1:
+-			cutin "bat_crua1",2;
+-			mes "[Prince Croix]";
+-			mes "Thank you so much. I feel like I can win with the help of adventurers like you.";
+-			mes "Now, please go downstairs and join your comrades in sharpening their skills to fight the enemy!";
+-			break;
+-		case 2:
+-			mes "[Prince Croix]";
+-			mes "For Maroll!";
+-			break;
+-		}
+-		break;
++			mes "[^FFA500Battle Recruiter^000000]";
++			mes "Tell me... what battleground you don't understand?";
++			next;
++			switch(select("Capture the Flag:Team DeathMatch:Stone Control:Eye of Storm:Bossnia:Domination:Triple Inferno:Conquest:Rush:Poring Ball:Bomberman")) {
++			case 1:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "The objective of the Flavius Battle CTF is to score 3 points before your enemy, by capture their Flag.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "To capture a Flag you need to take the enemy flag, and bring it to your base flag.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "If your base flag is captured too, you need to kill the flag carrier and take the flag back to your base.";
++				break;
++			case 2:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Kill all the enemy players to let their Team without points.";
++				mes "Protect our army.";
++				break;
++			case 3:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Take the Stones in the middle of the battlefield and put in on your base, in the Stone Points.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Each Stone will give points to your team. First team reach 99 points wins the game.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Protect your stones from to be captured by the enemy.";
++				break;
++			case 4:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "There are two bases, North and South which teams can capture by holding position on the Base more than the other team.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Each base will give you points each 5 seconds of Domination. If your Team control both bases the amount of points increases.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "To get aditional points, in the middle there is a Flag spawn, capture it and put it on any of your team Bases.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "The first Team reach 99 points wins the match.";
++				break;
++			case 5:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Attack the enemy base and destroy each MVP Guardian. To do damage to the guardian your team must capture the Balance Flag in the middle base.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Each team have 5 guardian to be protected or killed.";
++				break;
++			case 6:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "There are three bases, North, Center and South which teams can capture by holding position on the Base more than the other team.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Each base will give you points each 5 seconds of Domination.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "The first Team reach 99 points wins the match.";
++				break;
++			case 7:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "There are 2 teams in the battlefield, your team and the opposite enemies.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Kill the enemy players, collect the skulls and bring them to the Sacrifice Totem to win points.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "You can collect your own team skulls and bring then to your Sacrifice Totem to avoid other teams to score but it won't count as points.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "If you get killed all your skulls will be drop to the floor, including your own skull. First Team to get 80 points wins the battle.";
++				break;
++			case 8:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "If you are Attacking, destroy the enemy defenses and it's Flag.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "If you are Defending, protect your castle defenses and the Flag.";
++				break;
++			case 9:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "Fight to capture the Castle and organize your team to defend it.";
++				next;
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "If you fail on the first capture, kill the defender and take it for your team.";
++				break;
++			case 10:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "It is a soccer game, a poring (the ball) will be in the middle of the field. The match lasts 5min. The team that has the most goals win the game.";
++				close;
++			case 11:
++				mes "[^FFA500Battle Recruiter^000000]";
++				mes "The classic game specially made in Ragnarok Online. The goal is to defeat the enemies by putting bombs that will explode on them. It is a 2vs2 version of the game.";
++				close;
++			}
++		close;
+ 	case 2:
+-		cutin "bat_crua2",2;
+-		mes "[Prince Croix]";
+-		mes "The 3rd Prince Guillaume is the great general of Maroll.";
+-		mes "It's a waste of time to explain to you how great a leader or warlord he is, since he commands the great military power of Maroll.";
+-		next;
+-		mes "[Prince Croix]";
+-		mes "Unfortunately, there's something he and his followers are unaware of:";
+-		mes "Do the people of Maroll really want them to spend so much money on military power?";
+-		mes "We have suffered enough from wars.";
+-		mes "I believe weapons aren't the best way to bring prosperity to a nation.";
+-		next;
+-		mes "[Prince Croix]";
+-		mes "I do not wish to shed blood, but I have no choice but to fight for the possibility of peace and for the sake of my people.";
+-		next;
+-		switch(select("Yes, I want to join you.:End Conversation")) {
+-		case 1:
+-			cutin "bat_crua1",2;
+-			mes "[Prince Croix]";
+-			mes "Thank you so much. I feel like I can win with the help of adventurers like you.";
+-			mes "Now, please go downstairs and join your comrades in sharpening their skills to fight the enemy!";
+-			break;
+-		case 2:
+-			mes "[Prince Croix]";
+-			mes "For Maroll!";
+-			break;
+-		}
+-		break;
++		mes "[^FFA500Battle Recruiter^000000]";
++		mes "May the War God bless you.";
++		close2;
++		warp "bat_room",155,150;
++		end;
+ 	}
+-	close2;
+-	cutin "bat_crua1",255;
+-	cutin "bat_crua2",255;
+ 	end;
+ }
+ 
+-bat_room,161,140,3	script	Prince Croix's Aide#01	415,{ end; }
+-bat_room,161,142,3	script	Prince Croix's Aide#02	415,{ end; }
++prontera,123,83,3	duplicate(BG_Register)	Battle Information#prt	4_F_JOB_KNIGHT
++bat_room,159,164,4	duplicate(BG_Register)	Battle Recruiter#batroom	4_F_JOB_KNIGHT
+ 
+-bat_room,160,159,3	script	General Guillaume	420,{
++//============================================================
++//= General Guillaume scripts.
++//============================================================
++bat_room,160,159,3	script	General Guillaume	4_M_KY_KIYOM,{
+ 	cutin "bat_kiyom2",2;
+ 	mes "[General Guillaume]";
+ 	mes "Hot-blooded adventurer, we need your ability to win this battle.";

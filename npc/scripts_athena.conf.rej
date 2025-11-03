@@ -1,0 +1,38 @@
+diff a/npc/scripts_athena.conf b/npc/scripts_athena.conf	(rejected hunks)
+@@ -12,22 +12,21 @@ npc: npc/airports/rachel.txt
+ npc: npc/airports/yuno.txt
+ 
+ // --------------------- Battle Grounds -------------------------
+-// - Flavius ----------------------------------------------------
+-npc: npc/battleground/flavius/flavius_enter.txt
+-npc: npc/battleground/flavius/flavius01.txt
+-npc: npc/battleground/flavius/flavius02.txt
+-// - Kreiger Von Midgard ----------------------------------------
+-npc: npc/battleground/kvm/kvm_enter.txt
+-npc: npc/battleground/kvm/kvm_item_pay.txt
+-npc: npc/battleground/kvm/kvm01.txt
+-npc: npc/battleground/kvm/kvm02.txt
+-npc: npc/battleground/kvm/kvm03.txt
+-// - Tierra Gorge -----------------------------------------------
+-npc: npc/battleground/tierra/tierra_enter.txt
+-npc: npc/battleground/tierra/tierra01.txt
+-npc: npc/battleground/tierra/tierra02.txt
+-// --------------------------------------------------------------
+ npc: npc/battleground/bg_common.txt
++npc: npc/battleground/bg_conquest.txt
++npc: npc/battleground/bg_flavius_capture_the_flag.txt
++npc: npc/battleground/bg_flavius_death_match.txt
++npc: npc/battleground/bg_flavius_stone_control.txt
++npc: npc/battleground/bg_poring_ball.txt
++npc: npc/battleground/bg_rush.txt
++npc: npc/battleground/bg_tierra_bossnia.txt
++npc: npc/battleground/bg_tierra_domination.txt
++npc: npc/battleground/bg_tierra_eye_of_storm.txt
++npc: npc/battleground/bg_offi_flavius.txt
++npc: npc/battleground/bg_offi_kvm.txt
++npc: npc/battleground/bg_offi_tierra.txt
++npc: npc/battleground/bg_double_inferno.txt
++npc: npc/battleground/bg_bomberman.txt
+ 
+ // --------------------------- Cities ---------------------------
+ npc: npc/cities/alberta.txt

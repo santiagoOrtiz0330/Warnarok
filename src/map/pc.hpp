@@ -450,6 +450,12 @@ public:
 		// Bitmask of e_pcblock_action_flag values
 		uint16 block_action;
 		bool refineui_open;
+#ifdef BGEXTENDED
+		// BG eAmod
+		unsigned bg_afk : 1;
+		unsigned int bg_listen : 1;
+		unsigned int only_walk : 1;
+#endif
 		t_itemid inventory_expansion_confirmation;
 		uint16 inventory_expansion_amount;
 		t_itemid laphine_synthesis;
@@ -836,6 +842,14 @@ public:
 	// Battlegrounds queue system [MasterOfMuppets]
 	int32 bg_id, bg_queue_id;
 	int32 tid_queue_active; ///< Timer ID associated with players joining an active BG
+#ifdef BGEXTENDED
+	unsigned short bg_kills;	// Battleground Kill Count
+	int ballx;			// poringball [Grenat]
+	int bally;			// poringball [Grenat]
+	// Guild emblem backup for BG restoration
+	int32 bg_guild_id_backup;	// Original guild ID before BG
+	int32 bg_guild_emblem_id_backup;	// Original guild emblem ID before BG
+#endif
 
 #ifdef SECURE_NPCTIMEOUT
 	/**
@@ -1736,6 +1750,9 @@ void pc_show_questinfo(map_session_data *sd);
 void pc_show_questinfo_reinit(map_session_data *sd);
 
 bool pc_job_can_entermap(enum e_job jobid, int32 m, int32 group_lv);
+#ifdef BGEXTENDED
+int pc_update_last_action(struct map_session_data *sd);
+#endif
 
 #if defined(RENEWAL_DROP) || defined(RENEWAL_EXP)
 uint16 pc_level_penalty_mod( map_session_data* sd, e_penalty_type type, std::shared_ptr<s_mob_db> mob, mob_data* md = nullptr );

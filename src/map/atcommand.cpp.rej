@@ -1,0 +1,16 @@
+diff a/src/map/atcommand.cpp b/src/map/atcommand.cpp	(rejected hunks)
+@@ -11016,6 +11231,14 @@ void atcommand_basecommands(void) {
+ 		ACMD_DEF2("erasequest", quest),
+ 		ACMD_DEF2("completequest", quest),
+ 		ACMD_DEF2("checkquest", quest),
++#ifdef BGEXTENDED
++		//BG eAmod
++		ACMD_DEF(listenbg),
++		ACMD_DEF(order),
++		ACMD_DEF(leader),
++		ACMD_DEF(reportafk),
++		ACMD_DEF(bgskill),
++#endif
+ 		ACMD_DEF(refineui),
+ 		ACMD_DEFR(stylist, ATCMD_NOCONSOLE|ATCMD_NOAUTOTRADE),
+ 		ACMD_DEF(addfame),

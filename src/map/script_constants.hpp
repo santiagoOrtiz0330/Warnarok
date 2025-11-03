@@ -512,6 +512,13 @@
 	export_constant(MF_PRIVATEAIRSHIP_SOURCE);
 	export_constant(MF_PRIVATEAIRSHIP_DESTINATION);
 	export_constant(MF_SKILL_DURATION);
+#ifdef BGEXTENDED
+	// Battleground eAmod
+	export_constant(MF_NOECALL);
+	export_constant(MF_BG_CONSUME);
+	export_constant(MF_WOE_CONSUME);
+	export_constant(MF_BG_TOPSCORE);
+#endif
 	export_constant(MF_NOCASHSHOP);
 	export_constant(MF_NORODEX);
 	export_constant(MF_NORENEWALDROPPENALTY);
@@ -3542,6 +3549,9 @@
 	export_constant(AI_LEGION);
 	export_constant(AI_FAW);
 	export_constant(AI_GUILD);
+#ifdef BGEXTENDED
+	export_constant(AI_BOMB);
+#endif
 	export_constant(AI_WAVEMODE);
 	export_constant(AI_ABR);
 	export_constant(AI_BIONIC);
@@ -3800,6 +3810,13 @@
 	export_constant(PETINFO_BLOCKID);
 	export_constant(PETINFO_EGGID);
 	export_constant(PETINFO_FOODID);
+
+#ifdef BGEXTENDED
+	/* npcinfo types [Grenat]*/
+	export_constant(NPC_MAP);
+	export_constant(NPC_X);
+	export_constant(NPC_Y);
+#endif
 
 	// For backwards compatability - might be removed in the near future
 	export_constant2("PET_ID",PETINFO_ID);

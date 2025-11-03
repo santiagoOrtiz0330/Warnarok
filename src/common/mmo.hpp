@@ -766,6 +766,9 @@ struct mmo_guild {
 	struct guild_alliance alliance[MAX_GUILDALLIANCE];
 	struct guild_expulsion expulsion[MAX_GUILDEXPULSION];
 	struct guild_skill skill[MAX_GUILDSKILL];
+#ifdef BGEXTENDED
+	int skill_block_timer[MAX_GUILDSKILL]; // BG eAmod
+#endif
 	time_t last_leader_change;
 };
 

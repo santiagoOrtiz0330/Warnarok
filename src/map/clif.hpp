@@ -234,6 +234,9 @@ enum send_target : uint8_t {
 	BG_SAMEMAP_WOS,
 	BG_AREA,
 	BG_AREA_WOS,
+#ifdef BGEXTENDED
+	BG_LISTEN,
+#endif
 
 	CLAN,				// Clan System
 };
@@ -1118,6 +1121,19 @@ void clif_bg_updatescore(int16 m);
 void clif_bg_updatescore_single(map_session_data *sd);
 void clif_sendbgemblem_area(map_session_data *sd);
 void clif_sendbgemblem_single(int32 fd, map_session_data *sd);
+#ifdef BGEXTENDED
+// BG eAmod
+void clif_bg_belonginfo (class map_session_data *sd);
+int clif_visual_guild_id (struct block_list *bl);
+int clif_visual_emblem_id (struct block_list *bl);
+void clif_bg_emblem (class map_session_data *sd, struct mmo_guild *g);
+void clif_bg_memberlist (class map_session_data *sd);
+void clif_bg_leave_single (class map_session_data *sd, const char *name, const char *mes);
+void clif_bg_expulsion_single (class map_session_data *sd, const char *name, const char *mes);
+void clif_bg_updatescore_team (class map_session_data *sd);
+void clif_sendfakenpc(class map_session_data *sd, int npcid);
+void clif_sendfakenpc2(class map_session_data *sd, class map_session_data *fk);
+#endif
 
 // Battleground Queue
 void clif_bg_queue_apply_result(e_bg_queue_apply_ack result, const char *name, map_session_data *sd);

@@ -1,0 +1,11 @@
+diff a/src/map/storage.cpp b/src/map/storage.cpp	(rejected hunks)
+@@ -12,6 +12,9 @@
+ #include "../common/nullpo.hpp"
+ #include "../common/showmsg.hpp"
+ #include "../common/utilities.hpp"
++#ifdef BGEXTENDED
++#include "../common/utils.hpp"
++#endif
+ 
+ #include "battle.hpp"
+ #include "chrif.hpp"

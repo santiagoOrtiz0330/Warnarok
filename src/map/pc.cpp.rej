@@ -1,0 +1,40 @@
+diff a/src/map/pc.cpp b/src/map/pc.cpp	(rejected hunks)
+@@ -5375,9 +5379,23 @@ int pc_getcash(struct map_session_data *sd, int cash, int points, e_log_pick_typ
+  * @return Stored index in inventory, or -1 if not found.
+  **/
+ short pc_search_inventory(struct map_session_data *sd, t_itemid nameid) {
++#ifdef BGEXTENDED
++	short i,x,y;
++#else
+ 	short i;
++#endif
+ 	nullpo_retr(-1, sd);
+ 
++#ifdef BGEXTENDED
++	if (map_getmapflag(sd->bl.m, MF_BG_CONSUME)) {
++		ARR_FIND( 0, MAX_INVENTORY, x, sd->inventory.u.items_inventory[x].nameid == nameid && ( MakeDWord(sd->inventory.u.items_inventory[x].card[2], sd->inventory.u.items_inventory[x].card[3]) == battle_config.bg_reserved_char_id ) && (sd->inventory.u.items_inventory[x].amount > 0 || nameid == 0) );
++			if( x < MAX_INVENTORY) return x;
++	}
++	if (map_getmapflag(sd->bl.m, MF_WOE_CONSUME)) {
++		ARR_FIND( 0, MAX_INVENTORY, y, sd->inventory.u.items_inventory[y].nameid == nameid && ( MakeDWord(sd->inventory.u.items_inventory[y].card[2], sd->inventory.u.items_inventory[y].card[3]) == battle_config.woe_reserved_char_id ) && (sd->inventory.u.items_inventory[y].amount > 0 || nameid == 0) );
++			if( y < MAX_INVENTORY) return y;
++	}
++#endif
+ 	ARR_FIND( 0, MAX_INVENTORY, i, sd->inventory.u.items_inventory[i].nameid == nameid && (sd->inventory.u.items_inventory[i].amount > 0 || nameid == 0) );
+ 	return ( i < MAX_INVENTORY ) ? i : -1;
+ }
+@@ -10655,6 +10681,14 @@ bool pc_candrop(struct map_session_data *sd, struct item *item)
+ 		return false;
+ 	if( !pc_can_give_items(sd) || sd->sc.cant.drop) //check if this GM level can drop items
+ 		return false;
++#ifdef BGEXTENDED
++	if( item->card[0] == CARD0_CREATE) {
++		if (MakeDWord(item->card[2], item->card[3]) == battle_config.bg_reserved_char_id)
++			return false;
++		if (MakeDWord(item->card[2], item->card[3]) == battle_config.woe_reserved_char_id)
++			return false;
++	}
++#endif
+ 	return (itemdb_isdropable(item, pc_get_group_level(sd)));
+ }
+ 

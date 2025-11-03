@@ -47,6 +47,36 @@ Body:
     Value: 5
   - Name: REPUTATION_EP18
     Value: 3
+  - Name: BG_BOMBERMAN
+    Value: 1
+  - Name: BG_CONQUEST
+    Value: 2
+  - Name: BG_INFERNO
+    Value: 3
+  - Name: BG_CAPTUREFLAG
+    Value: 4
+  - Name: BG_DEATHMATCH
+    Value: 5
+  - Name: BG_STONECONTROL
+    Value: 6
+  - Name: BG_FLAVIUS
+    Value: 7
+  - Name: BG_KVM
+    Value: 8
+  - Name: BG_TIERRA
+    Value: 9
+  - Name: BG_PECORACER
+    Value: 10
+  - Name: BG_PORINGBALL
+    Value: 11
+  - Name: BG_RUSH
+    Value: 12
+  - Name: BG_BOSSNIA
+    Value: 13
+  - Name: BG_DOMINATION
+    Value: 14
+  - Name: BG_EYEOFSTORM
+    Value: 15
 
 Footer:
   Imports:

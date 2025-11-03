@@ -718,6 +718,20 @@ struct Battle_Config
 	int32 mercenary_autoloot;
 	int32 mer_idle_no_share;
 	int32 idletime_mer_option;
+#ifdef BGEXTENDED
+	int bg_idle_announce;
+	int bg_idle_autokick;
+	int bg_reportafk_leaderonly;
+	int bg_queue2team_balanced;
+	int bg_reward_rates;
+	int bg_queue_onlytowns;
+	int bg_order_behavior;
+	int bg_eAmod_mode;
+	int bg_reserved_char_id;
+	int woe_reserved_char_id;
+	int bg_can_trade;
+	int bg_double_login;
+#endif
 	int32 feature_refineui;
 	int32 rndopt_drop_pillar;
 	int32 pet_legacy_formula;

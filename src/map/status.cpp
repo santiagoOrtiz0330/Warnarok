@@ -8910,8 +8910,44 @@ int32 status_get_emblem_id(struct block_list *bl)
 {
 	nullpo_ret(bl);
 	switch (bl->type) {
-		case BL_PC:
-			return ((TBL_PC*)bl)->guild_emblem_id;
+		case BL_PC: {
+			TBL_PC* sd = (TBL_PC*)bl;
+			
+			// For battleground players, use clan emblem system instead of guild
+			if (sd->bg_id > 0 && battle_config.bg_eAmod_mode) {
+				// Map BG team to clan emblem ID
+				std::shared_ptr<s_battleground_data> bgd = util::umap_find(bg_team_db, sd->bg_id);
+				if (bgd && bgd->g) {
+					ShowMessage("status_get_emblem_id: BG Player %s using clan emblem, team_id=%d, emblem_id=%d\n", 
+						sd->status.name, bgd->team_id, bgd->g->emblem_id);
+					return bgd->g->emblem_id; // Use BG emblem ID for character display
+				}
+			}
+			
+			// For non-BG players, use player's guild_emblem_id first, then check guild data
+			if (sd->status.guild_id > 0) {
+				// If player has a guild_emblem_id cached, use it
+				if (sd->guild_emblem_id > 0) {
+					ShowMessage("status_get_emblem_id: Player %s using cached emblem_id=%d\n", 
+						sd->status.name, sd->guild_emblem_id);
+					return sd->guild_emblem_id;
+				}
+				
+				// Otherwise, try to get from guild data
+				std::shared_ptr<MapGuild> g = guild_search(sd->status.guild_id);
+				if (g) {
+					ShowMessage("status_get_emblem_id: Player %s in guild %s, emblem_id=%d\n", 
+						sd->status.name, g->guild.name, g->guild.emblem_id);
+					// Update player's cached emblem ID
+					sd->guild_emblem_id = g->guild.emblem_id;
+					return g->guild.emblem_id;
+				}
+			}
+			
+			ShowMessage("status_get_emblem_id: Player %s, no emblem (guild_id=%d, bg_id=%d)\n", 
+				sd->status.name, sd->status.guild_id, sd->bg_id);
+			return 0;
+		}
 		case BL_PET:
 			if (((TBL_PET*)bl)->master)
 				return ((TBL_PET*)bl)->master->guild_emblem_id;

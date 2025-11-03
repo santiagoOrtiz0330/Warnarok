@@ -874,7 +874,9 @@ int32 guild_recv_info(const struct mmo_guild &sg) {
 			continue;
 		if( sd->guild == nullptr || sd->guild != g ){
 			sd->guild = g;
+			sd->guild_emblem_id = g->guild.emblem_id; // Update emblem ID when guild is assigned
 			clif_name_area(&sd->bl);
+			clif_guild_emblem_area(&sd->bl); // Refresh emblem display for newly linked guild
 		}
 		if(channel_config.ally_tmpl.name[0] && (channel_config.ally_tmpl.opt&CHAN_OPT_AUTOJOIN)) {
 			channel_gjoin(sd,3); //make all member join guildchan+allieschan

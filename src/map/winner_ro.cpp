@@ -98,7 +98,6 @@ void save_skill_log_db(void){
 		char line[256];
 		char time_str[32];
 		int char_id, guild_id, skill_id, skill_lv;
-		char query[512];
 		std::stringstream ss;
         int count = 0;
         const int BATCH_SIZE = 100; // Número de filas por lote
@@ -178,8 +177,8 @@ void save_damage_log_local(block_list *src, block_list *target, int64 damage, ui
 				FILE *log_file = fopen(full_log_path.c_str(), "a"); // `c_str()` convierte `std::string` a `const char*`
 
 				if (log_file) {
-					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%d\n",
-						time_str, sd->status.char_id, attacker_guild_id, skill_id, skill_lv, tsd->status.char_id, target_guild_id, damage);
+					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%lld\n",
+						time_str, sd->status.char_id, attacker_guild_id, skill_id, skill_lv, tsd->status.char_id, target_guild_id, (long long)damage);
 					fclose(log_file);
 				}
 				else {
@@ -202,7 +201,6 @@ void save_damage_log_db(void){
 		char line[256];
 		char time_str[32];
 		int attacker_char_id, attacker_guild_id, attacker_skill_id, attacker_skill_lv, target_char_id,target_guild_id, attacker_damage;
-		char query[512];
 		std::stringstream ss;
         int count = 0;
         const int BATCH_SIZE = 100; // Número de filas por lote
@@ -300,7 +298,6 @@ void save_kill_log_db(void) {
         char line[256];
 		char time_str[32];
 		int attacker_char_id, attacker_guild_id, attacker_skill_id, attacker_skill_lv, target_char_id,target_guild_id;
-		char query[512];
         std::stringstream ss;
         int count = 0;
         const int BATCH_SIZE = 100; // Número de filas por lote
@@ -380,8 +377,8 @@ void save_skill_recovery_log_local(block_list *src, block_list *target, int64 re
 				FILE *log_file = fopen(full_log_path.c_str(), "a");
 
 				if (log_file) {
-					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%d\n",
-						time_str, sd->status.char_id, source_guild_id, skill_id, skill_lv, tsd->status.char_id, target_guild_id, recovery);
+					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%lld\n",
+						time_str, sd->status.char_id, source_guild_id, skill_id, skill_lv, tsd->status.char_id, target_guild_id, (long long)recovery);
 					fclose(log_file);
 				}
 				else {

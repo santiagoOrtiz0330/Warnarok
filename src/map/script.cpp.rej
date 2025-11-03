@@ -1,0 +1,28 @@
+diff a/src/map/script.cpp b/src/map/script.cpp	(rejected hunks)
+@@ -13474,6 +13474,11 @@ BUILDIN_FUNC(flagemblem)
+ {
+ 	TBL_NPC* nd;
+ 	int g_id = script_getnum(st,2);
++#ifdef BGEXTENDED
++	int flag = 0;
++	if( script_hasdata(st,3) )
++		flag = 1;
++#endif
+ 
+ 	if(g_id < 0)
+ 		return SCRIPT_CMD_SUCCESS;
+@@ -20516,10 +20528,14 @@ BUILDIN_FUNC(waitingroom2bg)
+ 	unsigned char i,c=0;
+ 	struct s_battleground_team team;
+ 
++#ifdef BGEXTENDED
++	nd = (struct npc_data *)map_id2bl(st->oid);
++#else
+ 	if( script_hasdata(st,7) )
+ 		nd = npc_name2id(script_getstr(st,7));
+ 	else
+ 		nd = (struct npc_data *)map_id2bl(st->oid);
++#endif
+ 
+ 	if( nd == NULL || (cd = (struct chat_data *)map_id2bl(nd->chat_id)) == NULL )
+ 	{
