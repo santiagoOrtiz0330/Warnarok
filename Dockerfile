@@ -24,12 +24,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-
-# Copy files that affect CMake configuration to leverage Docker cache.
-COPY CMakeLists.txt ./
-COPY src/CMakeLists.txt src/
-COPY 3rdparty/CMakeLists.txt 3rdparty/
-COPY 3rdparty/cmake 3rdparty/cmake
+COPY . .
 
 RUN cmake -S . -B build \
         -G Ninja \
@@ -38,9 +33,6 @@ RUN cmake -S . -B build \
         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
         -DINSTALL_TO_PATH=ON \
         -DINSTALL_PATH=/opt/rathena
-
-# Copy the remainder of the source tree.
-COPY . .
 
 # Build and install the servers.
 RUN cmake --build build --target install
