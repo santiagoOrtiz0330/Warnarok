@@ -120,16 +120,16 @@ bind_ip: ${MAP_BIND_IP}
 EOF
 
 # Ensure binaries are on PATH
-export PATH="${RATHENA_HOME}/bin:${PATH}"
+export PATH="${RATHENA_HOME}:${RATHENA_HOME}/bin:${PATH}"
 
 # Launch servers if no explicit command is provided.
 if [[ $# -eq 0 || "$1" == "all" ]]; then
     echo "Starting login-server, char-server, map-server..."
-    "${RATHENA_HOME}/bin/login-server" &
+    "${RATHENA_HOME}/login-server" &
     LOGIN_PID=$!
-    "${RATHENA_HOME}/bin/char-server" &
+    "${RATHENA_HOME}/char-server" &
     CHAR_PID=$!
-    "${RATHENA_HOME}/bin/map-server" &
+    "${RATHENA_HOME}/map-server" &
     MAP_PID=$!
 
     trap 'kill ${LOGIN_PID} ${CHAR_PID} ${MAP_PID}' TERM INT
