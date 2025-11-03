@@ -1,96 +1,108 @@
--- The C compiler identification is GNU 12.2.0
--- The CXX compiler identification is GNU 12.2.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: /usr/bin/c++ - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- Detecting git
--- Found Git: /usr/bin/git (found version "2.39.5") 
--- Found git : /usr/bin/git version (2.39.5)
--- git Version: unknow, unknow
--- Detecting threads library
--- Performing Test CMAKE_HAVE_LIBC_PTHREAD
--- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
--- Found Threads: TRUE  
--- Detecting threads library - done
--- Check if supporting Thread local storage (TLS)
--- Performing Test HAVE_TLS
--- Performing Test HAVE_TLS - Success
--- Check for TLS- yes
--- Detecting math library (m)
--- Looking for math.h
--- Looking for math.h - found
--- Looking for floor
--- Looking for floor - not found
--- Looking for floor in m
--- Looking for floor
--- Looking for floor - found
--- Found floor in m: /usr/lib/x86_64-linux-gnu/libm.so
--- Adding global library: /usr/lib/x86_64-linux-gnu/libm.so
--- Detecting math library (m) - done
--- Detecting dynamic loading library (dl)
--- Looking for dlopen
--- Looking for dlopen - found
--- Found dlopen in global libraries
--- Detecting dynamic loading library (dl) - done
--- Detecting networking library (socket/nsl/ws2_32)
--- Looking for gethostbyname
--- Looking for gethostbyname - found
--- Found gethostbyname in global libraries
--- Detecting networking library (socket/nsl/ws2_32) - done
--- Check for monotonic clock
--- Performing Test HAVE_MONOTONIC_CLOCK
--- Performing Test HAVE_MONOTONIC_CLOCK - Success
--- Check for monotonic clock - yes
--- Looking for setrlimit
--- Looking for setrlimit - found
--- Looking for strnlen
--- Looking for strnlen - found
--- Looking for getpid
--- Looking for getpid - found
--- Looking for gettid
--- Looking for gettid - found
--- Disabled package creation
-CMake Error at 3rdparty/CMakeLists.txt:50 (add_subdirectory):
-  add_subdirectory given source "httplib" which is not an existing directory.
-CMake Error at 3rdparty/CMakeLists.txt:51 (add_subdirectory):
-  add_subdirectory given source "json" which is not an existing directory.
-CMake Error at 3rdparty/CMakeLists.txt:52 (add_subdirectory):
-  add_subdirectory given source "libconfig" which is not an existing
-  directory.
-CMake Error at 3rdparty/CMakeLists.txt:53 (add_subdirectory):
-  add_subdirectory given source "mysql" which is not an existing directory.
-CMake Error at 3rdparty/CMakeLists.txt:54 (add_subdirectory):
-  add_subdirectory given source "pcre" which is not an existing directory.
-CMake Error at 3rdparty/CMakeLists.txt:55 (add_subdirectory):
-  add_subdirectory given source "rapidyaml" which is not an existing
-  directory.
-CMake Error at 3rdparty/CMakeLists.txt:56 (add_subdirectory):
-  add_subdirectory given source "yaml-cpp" which is not an existing
-  directory.
-CMake Error at 3rdparty/CMakeLists.txt:57 (add_subdirectory):
-  add_subdirectory given source "zlib" which is not an existing directory.
-CMake Error at src/CMakeLists.txt:13 (add_subdirectory):
-  add_subdirectory given source "common" which is not an existing directory.
-CMake Error at src/CMakeLists.txt:24 (add_subdirectory):
-  add_subdirectory given source "login" which is not an existing directory.
-CMake Error at src/CMakeLists.txt:25 (add_subdirectory):
-  add_subdirectory given source "char" which is not an existing directory.
-CMake Error at src/CMakeLists.txt:26 (add_subdirectory):
-  add_subdirectory given source "map" which is not an existing directory.
--- Disabled server targets (requires common)
-CMake Error at src/CMakeLists.txt:27 (add_subdirectory):
-  add_subdirectory given source "web" which is not an existing directory.
-CMake Error at src/CMakeLists.txt:28 (add_subdirectory):
-  add_subdirectory given source "tool" which is not an existing directory.
-CMake Error at CMakeLists.txt:625 (message):
-  no targets available
--- Configuring incomplete, errors occurred!
-See also "/src/build/CMakeFiles/CMakeOutput.log".
-See also "/src/build/CMakeFiles/CMakeError.log".
+[SQL]: Can't connect to server on '127.0.0.1' (115)
+[Error]: Couldn't connect with uname='root',host='127.0.0.1',port='3306',database='ragnarok'
+[Info]: Connect Character DB server.... (Character Server)
+Starting login-server, char-server, map-server...
+[Status]: Memory manager initialised: log/login-server.leaks
+[Status]: Memory manager initialised: log/char-server.leaks
+                                                                      
+                                                                      
+                   rAthena Development Team presents                  
+                     http://rathena.org/board/                        
+                      ___   __  __                                    
+                _____/   | / /_/ /_  ___  ____  ____ _                
+               / ___/ /| |/ __/ __ \/ _ \/ __ \/ __ `/                
+              / /  / ___ / /_/ / / /  __/ / / / /_/ /                 
+             /_/  /_/  |_\__/_/ /_/\___/_/ /_/\__,_/                  
+                                                                      
+                                                                      
+                   rAthena Development Team presents                  
+                      ___   __  __                                    
+                _____/   | / /_/ /_  ___  ____  ____ _                
+               / ___/ /| |/ __/ __ \/ _ \/ __ \/ __ `/                
+[Info]: Done reading '23' messages in 'conf/msg_conf/login_msg.conf'.
+[Warning]: You are running rAthena with root privileges, it is not necessary.
+[Info]: Done reading conf/import/char_conf.txt.
+[Info]: Finished reading conf/import/login_conf.txt.
+              / /  / ___ / /_/ / / /  __/ / / / /_/ /                 
+[Info]: Server uses 'select' as event dispatcher
+[Info]: Finished reading conf/login_athena.conf.
+[Info]: Done reading conf/char_athena.conf.
+             /_/  /_/  |_\__/_/ /_/\___/_/ /_/\__,_/                  
+[Info]: Server supports up to '1024' concurrent connections.
+                                                                      
+[Info]: Server supports up to '1024' concurrent connections.
+                     http://rathena.org/board/                        
+[Status]: Login server IP address : 127.0.0.1 -> 127.0.0.1
+                                                                      
+[Status]: Character server IP address : 127.0.0.1 -> 127.0.0.1
+[Warning]: You are running rAthena with root privileges, it is not necessary.
+[Info]: Finished reading conf/import/inter_conf.txt.
+[Info]: Server uses 'select' as event dispatcher
+[Info]: Finished reading conf/inter_athena.conf.
+[Info]: Done reading conf/import/inter_conf.txt.
+[SQL]: Can't connect to server on '127.0.0.1' (115)
+[Info]: Done reading conf/inter_athena.conf.
+[Error]: [Debug]: at /src/src/char/inter.cpp:979
+[Info]: Done reading conf/import/inter_conf.txt.
+[SQL]: Can't connect to server on '127.0.0.1' (115)
+[Info]: Done reading conf/inter_athena.conf.
+Couldn't connect with username = 'root', host = '127.0.0.1', port = '3306', database = 'ragnarok'
+[Error]: Couldn't connect with uname='root',host='127.0.0.1',port='3306',database='ragnarok'
+[Info]: Done reading '169' messages in 'conf/msg_conf/char_msg.conf'.
+[Debug]: at /src/src/login/loginlog.cpp:130
+[Warning]: Using the default user/password s1/p1 is NOT RECOMMENDED.
+[Info]: Connect Character DB server.... (Character Server)
+[Notice]: Please edit your 'login' table to create a proper inter-server user/password (gender 'S')
+[Notice]: And then change the user/password to use in conf/char_athena.conf (or conf/import/char_conf.txt)
+Starting login-server, char-server, map-server...
+                _____/   | / /_/ /_  ___  ____  ____ _                
+[Status]: Memory manager initialised: log/login-server.leaks
+               / ___/ /| |/ __/ __ \/ _ \/ __ \/ __ `/                
+[Status]: Memory manager initialised: log/char-server.leaks
+              / /  / ___ / /_/ / / /  __/ / / / /_/ /                 
+             /_/  /_/  |_\__/_/ /_/\___/_/ /_/\__,_/                  
+                                                                      
+                   rAthena Development Team presents                  
+                                                                      
+                      ___   __  __                                    
+                _____/   | / /_/ /_  ___  ____  ____ _                
+                     http://rathena.org/board/                        
+               / ___/ /| |/ __/ __ \/ _ \/ __ \/ __ `/                
+                                                                      
+                                                                      
+                   rAthena Development Team presents                  
+                      ___   __  __                                    
+              / /  / ___ / /_/ / / /  __/ / / / /_/ /                 
+[Info]: Done reading conf/char_athena.conf.
+             /_/  /_/  |_\__/_/ /_/\___/_/ /_/\__,_/                  
+[Info]: Finished reading conf/import/inter_conf.txt.
+[Warning]: You are running rAthena with root privileges, it is not necessary.
+[Info]: Finished reading conf/inter_athena.conf.
+                                                                      
+[Info]: Finished reading conf/import/login_conf.txt.
+                     http://rathena.org/board/                        
+[Info]: Finished reading conf/login_athena.conf.
+                                                                      
+[Info]: Done reading '23' messages in 'conf/msg_conf/login_msg.conf'.
+[Warning]: You are running rAthena with root privileges, it is not necessary.
+[Info]: Server uses 'select' as event dispatcher
+[Info]: Server uses 'select' as event dispatcher
+[Info]: Server supports up to '1024' concurrent connections.
+[Info]: Server supports up to '1024' concurrent connections.
+[Status]: Login server IP address : 127.0.0.1 -> 127.0.0.1
+[Status]: Character server IP address : 127.0.0.1 -> 127.0.0.1
+[Info]: Done reading conf/import/char_conf.txt.
+[Status]: Memory manager initialised: log/map-server.leaks
+[Info]: Done reading conf/import/inter_conf.txt.
+[Info]: Done reading conf/inter_athena.conf.
+                                                                      
+[Info]: Done reading '169' messages in 'conf/msg_conf/char_msg.conf'.
+                   rAthena Development Team presents                  
+[Warning]: Using the default user/password s1/p1 is NOT RECOMMENDED.
+[Notice]: Please edit your 'login' table to create a proper inter-server user/password (gender 'S')
+[Notice]: And then change the user/password to use in conf/char_athena.conf (or conf/import/char_conf.txt)
+[Info]: Done reading conf/import/inter_conf.txt.
+[Info]: Done reading conf/inter_athena.conf.
+[Info]: Connect Character DB server.... (Character Server)
+[SQL]: Can't connect to server on '127.0.0.1' (115)
+[Error]: Couldn't connect with username = 'root', host = '127.0.0.1', port = '3306', database = 'ragnarok'
