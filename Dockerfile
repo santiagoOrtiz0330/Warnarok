@@ -14,6 +14,7 @@ RUN apt-get update && \
         ca-certificates \
         ccache \
         cmake \
+        git \
         libmariadb-dev \
         libmariadb-dev-compat \
         libpcre3-dev \
@@ -28,6 +29,7 @@ WORKDIR /src
 COPY CMakeLists.txt ./
 COPY src/CMakeLists.txt src/
 COPY 3rdparty/CMakeLists.txt 3rdparty/
+COPY 3rdparty/cmake 3rdparty/cmake
 
 RUN cmake -S . -B build \
         -G Ninja \
