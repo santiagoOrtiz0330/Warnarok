@@ -150,18 +150,51 @@ echo "================================"
 # Ensure binaries are on PATH
 export PATH="${RATHENA_HOME}:${RATHENA_HOME}/bin:${PATH}"
 
-# Launch servers if no explicit command is provided.
-if [[ $# -eq 0 || "$1" == "all" ]]; then
-    echo "Starting login-server, char-server, map-server..."
-    "${RATHENA_HOME}/login-server" &
-    LOGIN_PID=$!
-    "${RATHENA_HOME}/char-server" &
-    CHAR_PID=$!
-    "${RATHENA_HOME}/map-server" &
-    MAP_PID=$!
+# Determine which servers to start based on START_SERVERS environment variable
+# Defaults to "all" if not set
+START_SERVERS=${START_SERVERS:-all}
 
-    trap 'kill ${LOGIN_PID} ${CHAR_PID} ${MAP_PID}' TERM INT
-    wait -n ${LOGIN_PID} ${CHAR_PID} ${MAP_PID}
+echo "=== Server Startup Configuration ==="
+echo "START_SERVERS=${START_SERVERS}"
+echo "===================================="
+
+# Launch servers if no explicit command is provided.
+if [[ $# -eq 0 ]]; then
+    PIDS=()
+    
+    if [[ "$START_SERVERS" == "all" || "$START_SERVERS" == *"login"* ]]; then
+        echo "Starting login-server..."
+        "${RATHENA_HOME}/login-server" &
+        LOGIN_PID=$!
+        PIDS+=($LOGIN_PID)
+        echo "Login server started with PID: $LOGIN_PID"
+    fi
+    
+    if [[ "$START_SERVERS" == "all" || "$START_SERVERS" == *"char"* ]]; then
+        echo "Starting char-server..."
+        "${RATHENA_HOME}/char-server" &
+        CHAR_PID=$!
+        PIDS+=($CHAR_PID)
+        echo "Char server started with PID: $CHAR_PID"
+    fi
+    
+    if [[ "$START_SERVERS" == "all" || "$START_SERVERS" == *"map"* ]]; then
+        echo "Starting map-server..."
+        "${RATHENA_HOME}/map-server" &
+        MAP_PID=$!
+        PIDS+=($MAP_PID)
+        echo "Map server started with PID: $MAP_PID"
+    fi
+    
+    if [[ ${#PIDS[@]} -eq 0 ]]; then
+        echo "Error: No servers configured to start. Set START_SERVERS environment variable."
+        echo "Valid values: all, login, char, map (or comma-separated combinations)"
+        exit 1
+    fi
+    
+    echo "All configured servers started. PIDs: ${PIDS[@]}"
+    trap "kill ${PIDS[@]} 2>/dev/null" TERM INT
+    wait -n ${PIDS[@]}
 else
     exec "$@"
 fi
