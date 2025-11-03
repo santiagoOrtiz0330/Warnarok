@@ -7,6 +7,9 @@ RUN apt update && apt install -y build-essential git cmake mysql-client libmysql
 WORKDIR /app
 COPY . .
 
+# Dar permiso de ejecución al script de inicio
+RUN chmod +x start-server.sh
+
 # Compilar rAthena
 RUN ./configure && make clean && make sql
 
