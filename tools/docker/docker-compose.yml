@@ -1,4 +1,4 @@
-version: "3.7"
+﻿version: "3.7"
 
 services:
     db:
@@ -21,9 +21,9 @@ services:
         command: "/rathena/tools/docker/builder.sh"
         volumes:
             - "../..:/rathena" # mount git repo directory inside container
-            - "./asset/inter_conf.txt:/rathena/conf/import/inter_conf.txt" # load db connection
-            - "./asset/char_conf.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
-            - "./asset/map_conf.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
+            - "./asset/inter_conf.local.txt:/rathena/conf/import/inter_conf.txt" # load db connection
+            - "./asset/char_conf.local.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
+            - "./asset/map_conf.local.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
         init: true # helps with signal forwarding and process reaping
         tty: true
         stdin_open: true
@@ -41,9 +41,9 @@ services:
             - "6900:6900" # login server
         volumes:
             - "../..:/rathena" # mount git repo directory inside container
-            - "./asset/inter_conf.txt:/rathena/conf/import/inter_conf.txt" # load db connection
-            - "./asset/char_conf.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
-            - "./asset/map_conf.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
+            - "./asset/inter_conf.local.txt:/rathena/conf/import/inter_conf.txt" # load db connection
+            - "./asset/char_conf.local.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
+            - "./asset/map_conf.local.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
         init: true # helps with signal forwarding and process reaping
         tty: true
         stdin_open: true
@@ -60,9 +60,9 @@ services:
             - "6121:6121" # char server
         volumes:
             - "../..:/rathena" # mount git repo directory inside container
-            - "./asset/inter_conf.txt:/rathena/conf/import/inter_conf.txt" # load db connection
-            - "./asset/char_conf.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
-            - "./asset/map_conf.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
+            - "./asset/inter_conf.local.txt:/rathena/conf/import/inter_conf.txt" # load db connection
+            - "./asset/char_conf.local.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
+            - "./asset/map_conf.local.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
         init: true # helps with signal forwarding and process reaping
         tty: true
         stdin_open: true
@@ -79,9 +79,9 @@ services:
             - "5121:5121" # map server
         volumes:
             - "../..:/rathena" # mount git repo directory inside container
-            - "./asset/inter_conf.txt:/rathena/conf/import/inter_conf.txt" # load db connection
-            - "./asset/char_conf.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
-            - "./asset/map_conf.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
+            - "./asset/inter_conf.local.txt:/rathena/conf/import/inter_conf.txt" # load db connection
+            - "./asset/char_conf.local.txt:/rathena/conf/import/char_conf.txt"   #localdev login-char relation
+            - "./asset/map_conf.local.txt:/rathena/conf/import/map_conf.txt"     #localdev char-map relation
         init: true # helps with signal forwarding and process reaping
         tty: true
         stdin_open: true
@@ -93,3 +93,4 @@ services:
 
 volumes:
     rathenadb:
+

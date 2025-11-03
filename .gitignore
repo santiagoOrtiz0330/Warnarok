@@ -155,3 +155,4 @@ generated
 # Local environment secrets
 .env
 conf/import/inter_conf.txt
+tools/docker/asset/*.local.txt
