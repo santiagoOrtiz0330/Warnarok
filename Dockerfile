@@ -5,14 +5,15 @@
 ##############################################
 FROM debian:bookworm-slim AS builder
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    CCACHE_DIR=/root/.ccache
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         ca-certificates \
+        ccache \
         cmake \
-        git \
         libmariadb-dev \
         libmariadb-dev-compat \
         libpcre3-dev \
@@ -22,14 +23,25 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-COPY . /src
 
-# Configure the CMake build to install into /opt/rathena inside the container.
+# Copy files that affect CMake configuration to leverage Docker cache.
+COPY CMakeLists.txt ./
+COPY src/CMakeLists.txt src/
+COPY 3rdparty/CMakeLists.txt 3rdparty/
+
 RUN cmake -S . -B build \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+        -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
         -DINSTALL_TO_PATH=ON \
-        -DINSTALL_PATH=/opt/rathena && \
+        -DINSTALL_PATH=/opt/rathena
+
+# Copy the remainder of the source tree.
+COPY . .
+
+# Build and install while persisting the compiler cache between builds.
+RUN --mount=type=cache,target=/root/.ccache \
     cmake --build build --target install
 
 ##############################################

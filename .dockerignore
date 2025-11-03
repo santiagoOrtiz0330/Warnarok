@@ -1,0 +1,10 @@
+.git
+.github
+.vs
+generated
+log
+*.exe
+*.pdb
+*.dll
+sql-files/*.sql
+*.bat
