@@ -40,9 +40,8 @@ RUN cmake -S . -B build \
 # Copy the remainder of the source tree.
 COPY . .
 
-# Build and install while persisting the compiler cache between builds.
-RUN --mount=type=cache,target=/root/.ccache,id=rathena-ccache \
-    cmake --build build --target install
+# Build and install the servers.
+RUN cmake --build build --target install
 
 ##############################################
 # Runtime stage - minimal image with servers #
