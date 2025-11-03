@@ -8,6 +8,13 @@ LOG_DIR=${RATHENA_LOG_DIR:-${RATHENA_HOME}/log}
 
 mkdir -p "${IMPORT_DIR}" "${LOG_DIR}"
 
+echo "=== Railway Configuration Debug ==="
+echo "MYSQL_HOST=${MYSQL_HOST:-not set}"
+echo "MYSQL_PORT=${MYSQL_PORT:-not set}"
+echo "MYSQL_USER=${MYSQL_USER:-not set}"
+echo "MYSQL_DATABASE=${MYSQL_DATABASE:-not set}"
+echo "===================================="
+
 # Resolve SQL credentials with sensible fallbacks.
 LOGIN_DB_HOST=${RATHENA_LOGIN_DB_HOST:-${MYSQL_HOST:-127.0.0.1}}
 LOGIN_DB_PORT=${RATHENA_LOGIN_DB_PORT:-${MYSQL_PORT:-3306}}
@@ -81,6 +88,14 @@ log_db_pw: ${LOG_DB_PASS}
 log_db_db: ${LOG_DB_NAME}
 EOF
 
+echo "=== Generated Database Config ==="
+echo "Database Host: ${LOGIN_DB_HOST}:${LOGIN_DB_PORT}"
+echo "Database User: ${LOGIN_DB_USER}"
+echo "Database Name: ${LOGIN_DB_NAME}"
+echo "Config file: ${IMPORT_DIR}/99-railway-inter.conf"
+cat "${IMPORT_DIR}/99-railway-inter.conf"
+echo "=================================="
+
 # Network defaults
 LOGIN_BIND_IP=${RATHENA_LOGIN_BIND_IP:-0.0.0.0}
 LOGIN_PORT=${RATHENA_LOGIN_PORT:-6900}
@@ -118,6 +133,10 @@ map_ip: ${MAP_PUBLIC_IP}
 map_port: ${MAP_PORT}
 bind_ip: ${MAP_BIND_IP}
 EOF
+
+echo "=== Generated Network Config ==="
+cat "${IMPORT_DIR}/99-railway-network.conf"
+echo "================================"
 
 # Ensure binaries are on PATH
 export PATH="${RATHENA_HOME}:${RATHENA_HOME}/bin:${PATH}"
