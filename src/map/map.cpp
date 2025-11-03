@@ -4289,7 +4289,8 @@ int32 map_sql_init(void)
 	mmysql_handle = Sql_Malloc();
 	qsmysql_handle = Sql_Malloc();
 
-	ShowInfo("Connecting to the Map DB Server....\n");
+	ShowInfo("Connecting to the Map DB Server.... [host=%s port=%d user=%s db=%s]\n",
+		map_server_ip.c_str(), map_server_port, map_server_id.c_str(), map_server_db.c_str());
 	if( SQL_ERROR == Sql_Connect(mmysql_handle, map_server_id.c_str(), map_server_pw.c_str(), map_server_ip.c_str(), map_server_port, map_server_db.c_str()) ||
 		SQL_ERROR == Sql_Connect(qsmysql_handle, map_server_id.c_str(), map_server_pw.c_str(), map_server_ip.c_str(), map_server_port, map_server_db.c_str()) )
 	{

@@ -110,6 +110,9 @@ static bool account_db_sql_init(AccountDB* self) {
 	db->accounts = Sql_Malloc();
 	sql_handle = db->accounts;
 
+	ShowInfo("Connect Login DB server.... (Login Server) [host=%s port=%hu user=%s db=%s]\n",
+		db->db_hostname.c_str(), db->db_port, db->db_username.c_str(), db->db_database.c_str());
+
 	if( SQL_ERROR == Sql_Connect(sql_handle, db->db_username.c_str(), db->db_password.c_str(), db->db_hostname.c_str(), db->db_port, db->db_database.c_str()) )
 	{
 		ShowError("Couldn't connect with uname='%s',host='%s',port='%hu',database='%s'\n",

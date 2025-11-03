@@ -971,7 +971,8 @@ int32 inter_init_sql(const char *file)
 
 	//DB connection initialized
 	sql_handle = Sql_Malloc();
-	ShowInfo("Connect Character DB server.... (Character Server)\n");
+	ShowInfo("Connect Character DB server.... (Character Server) [host=%s port=%d user=%s db=%s]\n",
+		char_server_ip.c_str(), char_server_port, char_server_id.c_str(), char_server_db.c_str());
 	if( SQL_ERROR == Sql_Connect(sql_handle, char_server_id.c_str(), char_server_pw.c_str(), char_server_ip.c_str(), (uint16)char_server_port, char_server_db.c_str()))
 	{
 		ShowError("Couldn't connect with username = '%s', host = '%s', port = '%d', database = '%s'\n",
@@ -1457,5 +1458,4 @@ int32 inter_parse_frommap(int32 fd)
 	RFIFOSKIP(fd, len);
 	return 1;
 }
-
 
