@@ -154,7 +154,7 @@ extern std::unordered_map<int32, std::shared_ptr<s_battleground_data>> bg_team_d
 extern std::vector<std::shared_ptr<s_battleground_queue>> bg_queues;
 
 #ifdef BGEXTENDED
-struct mmo_guild bg_guild[];
+extern struct mmo_guild bg_guild[];
 extern const unsigned int bg_colors[];
 struct mmo_guild* bg_guild_get(int bg_id);
 int battleground_countlogin(class map_session_data *sd, bool check_bat_room);
