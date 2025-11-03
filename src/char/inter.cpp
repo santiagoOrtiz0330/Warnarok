@@ -842,8 +842,10 @@ int32 inter_config_read(const char* cfgName)
 		if (sscanf(line, "%23[^:]: %1023[^\r\n]", w1, w2) != 2)
 			continue;
 
-		if(!strcmpi(w1,"char_server_ip"))
+		if(!strcmpi(w1,"char_server_ip")) {
 			char_server_ip = w2;
+			ShowInfo("inter_conf: char_server_ip=%s\n", char_server_ip.c_str());
+		}
 		else if(!strcmpi(w1,"char_server_port"))
 			char_server_port = atoi(w2);
 		else if(!strcmpi(w1,"char_server_id"))
@@ -1458,4 +1460,3 @@ int32 inter_parse_frommap(int32 fd)
 	RFIFOSKIP(fd, len);
 	return 1;
 }
-
