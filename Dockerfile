@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.6
 
 ##############################################
-# Build stage – compiles the rAthena servers #
+# Build stage - compiles the rAthena servers #
 ##############################################
 FROM debian:bookworm-slim AS builder
 
@@ -41,11 +41,11 @@ RUN cmake -S . -B build \
 COPY . .
 
 # Build and install while persisting the compiler cache between builds.
-RUN --mount=type=cache,target=/root/.ccache \
+RUN --mount=type=cache,target=/root/.ccache,id=rathena-ccache \
     cmake --build build --target install
 
 ##############################################
-# Runtime stage – minimal image with servers #
+# Runtime stage - minimal image with servers #
 ##############################################
 FROM debian:bookworm-slim
 
