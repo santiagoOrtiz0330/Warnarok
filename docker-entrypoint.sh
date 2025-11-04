@@ -117,13 +117,17 @@ LOGIN_MAP_SERVER_PORT=${RATHENA_MAP_SERVER_PORT:-5121}
 
 CHAR_BIND_IP=${RATHENA_CHAR_BIND_IP:-0.0.0.0}
 CHAR_PUBLIC_IP=${RATHENA_CHAR_PUBLIC_IP:-${RAILWAY_PUBLIC:-${CHAR_BIND_IP}}}
-CHAR_PORT=${RATHENA_CHAR_PORT:-6121}
+# Separate internal listening port from public advertised port
+CHAR_LISTEN_PORT=${RATHENA_CHAR_LISTEN_PORT:-6121}
+CHAR_PUBLIC_PORT=${RATHENA_CHAR_PUBLIC_PORT:-${CHAR_LISTEN_PORT}}
 CHAR_LOGIN_IP=${RATHENA_CHAR_LOGIN_IP:-127.0.0.1}
 CHAR_LOGIN_PORT=${RATHENA_CHAR_LOGIN_PORT:-6900}
 
 MAP_BIND_IP=${RATHENA_MAP_BIND_IP:-0.0.0.0}
 MAP_PUBLIC_IP=${RATHENA_MAP_PUBLIC_IP:-${RAILWAY_PUBLIC:-${MAP_BIND_IP}}}
-MAP_PORT=${RATHENA_MAP_PORT:-5121}
+# Separate internal listening port from public advertised port
+MAP_LISTEN_PORT=${RATHENA_MAP_LISTEN_PORT:-5121}
+MAP_PUBLIC_PORT=${RATHENA_MAP_PUBLIC_PORT:-${MAP_LISTEN_PORT}}
 MAP_CHAR_IP=${RATHENA_MAP_CHAR_IP:-127.0.0.1}
 MAP_CHAR_PORT=${RATHENA_MAP_CHAR_PORT:-6121}
 
@@ -143,8 +147,10 @@ cat > "${IMPORT_DIR}/99-railway-network-char.conf" <<EOF
 login_ip: ${CHAR_LOGIN_IP}
 login_port: ${CHAR_LOGIN_PORT}
 char_ip: ${CHAR_PUBLIC_IP}
-char_port: ${CHAR_PORT}
+char_port: ${CHAR_PUBLIC_PORT}
 bind_ip: ${CHAR_BIND_IP}
+// Internal listening port (Railway TCP proxy forwards to this)
+port: ${CHAR_LISTEN_PORT}
 EOF
 
 # Map server config
@@ -154,8 +160,10 @@ cat > "${IMPORT_DIR}/99-railway-network-map.conf" <<EOF
 char_ip: ${MAP_CHAR_IP}
 char_port: ${MAP_CHAR_PORT}
 map_ip: ${MAP_PUBLIC_IP}
-map_port: ${MAP_PORT}
+map_port: ${MAP_PUBLIC_PORT}
 bind_ip: ${MAP_BIND_IP}
+// Internal listening port (Railway TCP proxy forwards to this)
+port: ${MAP_LISTEN_PORT}
 EOF
 
 # For backward compatibility, create a combined file (will be used if specific files aren't imported)
