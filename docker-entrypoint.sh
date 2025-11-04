@@ -141,6 +141,8 @@ login_port: ${LOGIN_PORT}
 // Char server address advertised to clients after login
 char_server_ip: ${LOGIN_CHAR_SERVER_IP}
 char_server_port: ${LOGIN_CHAR_SERVER_PORT}
+// Enable debug logging
+console_msg_log: 7
 EOF
 
 # Char server config
