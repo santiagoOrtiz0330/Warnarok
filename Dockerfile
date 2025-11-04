@@ -33,7 +33,7 @@ RUN cmake -S . -B build \
         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
         -DINSTALL_TO_PATH=ON \
         -DINSTALL_PATH=/opt/rathena \
-        -DPACKETVER=20230404
+        "-DPACKETVER=20230404"
 
 # Build and install the servers.
 RUN cmake --build build --target install
