@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ ! -f /rathena/login-server ]; then
   export runBuild=1;
 elif [ ! -f /rathena/char-server ]; then
