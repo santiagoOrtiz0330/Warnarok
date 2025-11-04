@@ -158,6 +158,8 @@ login_port: ${CHAR_LOGIN_PORT}
 char_ip: ${CHAR_PUBLIC_IP}
 char_port: ${CHAR_PUBLIC_PORT}
 bind_ip: ${CHAR_BIND_IP}
+// Enable debug logging to see client connection details
+console_msg_log: 7
 EOF
 
 # Map server config
