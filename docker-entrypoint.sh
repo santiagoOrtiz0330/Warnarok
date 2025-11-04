@@ -138,6 +138,9 @@ cat > "${IMPORT_DIR}/99-railway-network-login.conf" <<EOF
 // Login server configuration
 bind_ip: ${LOGIN_BIND_IP}
 login_port: ${LOGIN_PORT}
+// Char server address advertised to clients after login
+char_server_ip: ${LOGIN_CHAR_SERVER_IP}
+char_server_port: ${LOGIN_CHAR_SERVER_PORT}
 EOF
 
 # Char server config
