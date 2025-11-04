@@ -180,15 +180,17 @@ login_port: ${LOGIN_PORT}
 login_ip: ${CHAR_LOGIN_IP}
 login_port: ${CHAR_LOGIN_PORT}
 char_ip: ${CHAR_PUBLIC_IP}
-char_port: ${CHAR_PORT}
+char_port: ${CHAR_PUBLIC_PORT}
 bind_ip: ${CHAR_BIND_IP}
+port: ${CHAR_LISTEN_PORT}
 
 // map_athena.conf overrides
 char_ip: ${MAP_CHAR_IP}
 char_port: ${MAP_CHAR_PORT}
 map_ip: ${MAP_PUBLIC_IP}
-map_port: ${MAP_PORT}
+map_port: ${MAP_PUBLIC_PORT}
 bind_ip: ${MAP_BIND_IP}
+port: ${MAP_LISTEN_PORT}
 EOF
 
 echo "=== Generated Network Config Files ==="
