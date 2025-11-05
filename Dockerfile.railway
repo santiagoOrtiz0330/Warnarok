@@ -12,7 +12,7 @@ COPY src/ src/
 COPY 3rdparty/ 3rdparty/
 
 # Configure (se cachea si configure no cambia)
-RUN ./configure --enable-packetver=20200902
+RUN ./configure --enable-packetver=20200902 --enable-web-server
 
 # Build solo lo que cambió
 RUN make server
@@ -48,4 +48,4 @@ RUN mkdir -p /rathena/log
 # Exponer puertos
 EXPOSE 6900 6121 5121 8888
 
-CMD ["./start-railway.sh"]
+CMD ["/start-railway.sh"]
