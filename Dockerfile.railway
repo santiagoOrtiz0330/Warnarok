@@ -6,15 +6,10 @@ WORKDIR /rathena
 # Instalar dependencias de build
 RUN apk add --no-cache wget git cmake make gcc g++ gdb zlib-dev mariadb-dev ca-certificates linux-headers bash
 
-# Copiar código fuente completo
-COPY . .
-
-# CREAR DIRECTORIOS NECESARIOS ANTES DE COMPILAR
-RUN mkdir -p conf/import \
-    && mkdir -p conf/msg_conf/import \
-    && mkdir -p db/import \
-    && mkdir -p log \
-    && mkdir -p logs
+# Copiar solo archivos necesarios para configure (se cachea si no cambian)
+COPY configure Makefile.in ./
+COPY src/ src/
+COPY 3rdparty/ 3rdparty/
 
 # Configure (se cachea si configure no cambia)
 RUN ./configure --enable-packetver=20200902
@@ -37,21 +32,18 @@ RUN wget https://raw.githubusercontent.com/eficode/wait-for/v2.2.2/wait-for -O /
 COPY --from=builder /rathena/login-server /rathena/char-server /rathena/map-server /rathena/web-server ./
 
 # Copiar archivos de configuración y datos
-COPY --from=builder /rathena/conf conf/
-COPY --from=builder /rathena/db db/
-COPY --from=builder /rathena/sql-files sql-files/
-COPY --from=builder /rathena/npc npc/
+COPY conf/ conf/
+COPY db/ db/
+COPY sql-files/ sql-files/
+COPY npc/ npc/
+# COPY log/ log/  <- ELIMINAR ESTA LÍNEA
 
 # Script de inicio
-COPY start-railway.sh ./
-RUN chmod +x start-railway.sh
+COPY start-railway.sh /start-railway.sh
+RUN chmod +x /start-railway.sh
 
-# Crear directorios necesarios en runtime
-RUN mkdir -p conf/import \
-    && mkdir -p conf/msg_conf/import \
-    && mkdir -p db/import \
-    && mkdir -p log \
-    && mkdir -p logs
+# Crear directorio de logs (se crea automáticamente)
+RUN mkdir -p /rathena/log
 
 # Exponer puertos
 EXPOSE 6900 6121 5121 8888
