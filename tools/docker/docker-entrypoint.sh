@@ -15,6 +15,7 @@ generate_railway_config() {
     # Railway TCP proxy detection
     RAILWAY_TCP_PROXY_DOMAIN=${RAILWAY_TCP_PROXY_DOMAIN:-${RAILWAY_PUBLIC_DOMAIN:-}}
     RAILWAY_TCP_PROXY_PORT=${RAILWAY_TCP_PROXY_PORT:-${PORT:-6900}}
+    PUBLIC_HOST=${RAILWAY_TCP_PROXY_DOMAIN:-127.0.0.1}
     
     # Database connection (Railway MySQL)
     DB_HOST=${DATABASE_URL:-${MYSQL_HOST:-db}}
@@ -27,7 +28,7 @@ generate_railway_config() {
     echo "Database: ${DB_HOST}:${DB_PORT}"
     echo ""
     echo "=== SINGLE-SERVICE DEPLOYMENT ==="
-    echo "All clients connect to: ${RAILWAY_TCP_PROXY_DOMAIN}:${RAILWAY_TCP_PROXY_PORT}"
+    echo "All clients connect to: ${PUBLIC_HOST}:${RAILWAY_TCP_PROXY_PORT}"
     echo "Internal routing:"
     echo "  - Login: 127.0.0.1:${RAILWAY_TCP_PROXY_PORT} (external clients)"
     echo "  - Char: 127.0.0.1:6121 (internal + advertised externally)"  
@@ -77,7 +78,7 @@ login_port: ${RAILWAY_TCP_PROXY_PORT}
 // SOLUTION: Use standard Ragnarok ports on Railway domain
 // Client will try to connect to char server on port 6121
 // Railway needs to expose BOTH ports: ${RAILWAY_TCP_PROXY_PORT} (login) AND 6121 (char)
-char_server_ip: ${RAILWAY_TCP_PROXY_DOMAIN}
+char_server_ip: ${PUBLIC_HOST}
 char_server_port: 6121
 console_msg_log: 7
 EOF
@@ -90,8 +91,8 @@ login_port: 6900
 bind_ip: 127.0.0.1
 char_ip: 127.0.0.1
 char_port: 6121
-advertise_host: ${RAILWAY_TCP_PROXY_DOMAIN}
-advertise_port: ${RAILWAY_TCP_PROXY_PORT}
+advertise_host: ${PUBLIC_HOST}
+advertise_port: 6121
 console_msg_log: 7
 EOF
 
@@ -103,8 +104,8 @@ char_port: 6121
 bind_ip: 127.0.0.1
 map_ip: 127.0.0.1
 map_port: 5121
-advertise_host: ${RAILWAY_TCP_PROXY_DOMAIN}  
-advertise_port: ${RAILWAY_TCP_PROXY_PORT}
+advertise_host: ${PUBLIC_HOST}  
+advertise_port: 5121
 console_msg_log: 7
 EOF
 
