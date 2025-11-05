@@ -16,8 +16,8 @@ COPY configure .
 COPY Makefile.in .
 COPY configure.ac .
 
-# Compilación rápida y paralela
-RUN ./configure && make server -j$(nproc)
+# Compilación rápida y paralela con PACKETVER para cliente 20211103
+RUN ./configure --enable-packetver=20211103 && make server -j$(nproc)
 
 # -----------------------------
 # Etapa 2: Imagen final
