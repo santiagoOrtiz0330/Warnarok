@@ -810,7 +810,7 @@ TIMER_FUNC(chlogif_check_connect_logserver){
 	memcpy(WFIFOP(login_fd,26), charserv_config.passwd, 24);
 	WFIFOL(login_fd,50) = 0;
 	WFIFOL(login_fd,54) = htonl(charserv_config.char_ip);
-	WFIFOW(login_fd,58) = htons(charserv_config.char_port);
+	WFIFOW(login_fd,58) = htons(charserv_config.advertise_port);  // Use advertise_port for login server
 	memcpy(WFIFOP(login_fd,60), charserv_config.server_name, 20);
 	WFIFOW(login_fd,80) = 0;
 	WFIFOW(login_fd,82) = charserv_config.char_maintenance;

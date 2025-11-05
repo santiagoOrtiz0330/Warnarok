@@ -174,6 +174,7 @@ struct CharServ_Config {
 	char bind_ip_str[128];
 	uint32 bind_ip;
 	uint16 char_port;
+	uint16 advertise_port;  // Custom: Port to advertise to login server
 	int32 char_maintenance;
 	bool char_new;
 	int32 char_new_display;
