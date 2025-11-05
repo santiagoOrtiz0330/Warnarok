@@ -28,16 +28,15 @@ help:
 #####################################################################
 
 obj:
-	@echo "	MKDIR	obj/src/c4/yml"
-	@echo "	MKDIR	obj/ext/c4core/src/c4"
-	@mkdir -p obj/src/c4/yml
-	@mkdir -p obj/ext/c4core/src/c4
+	@echo "	MKDIR	obj"
+	@mkdir -p obj
 
-obj/%.o: %.cpp $(RAPIDYAML_H)
+obj/%.o: %.cpp $(RAPIDYAML_H) | obj
+	@mkdir -p $(dir $@)
 	@echo "	CXX	$<"
 	@@CXX@ $(CXXFLAG) @CFLAGS_AR@ @CPPFLAGS@ -g $(INC) -c $(OUTPUT_OPTION) $<
 
-rapidyaml: obj $(RAPIDYAML_DIR_OBJ) $(RAPIDYAML_AR)
+rapidyaml: $(RAPIDYAML_AR)
 
 $(RAPIDYAML_AR): $(RAPIDYAML_DIR_OBJ)
 	@echo "	AR	$@"
