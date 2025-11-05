@@ -63,7 +63,12 @@ login_port: 6900
 
 // Enable web auth token
 use_web_auth_token: yes
-disable_webtoken_delay: 10000
+
+// AUMENTAR EL DELAY - 30 segundos en lugar de 10
+disable_webtoken_delay: 30000
+
+// Keep web tokens active longer
+webtoken_expiration_time: 300000
 EOF
 
 # Char configuration - CLAVE: usar IP interna para comunicación interna
