@@ -1,0 +1,33 @@
+// Web Server Configuration
+
+// The web server listens on the interface with this IP address
+bind_ip: 0.0.0.0
+
+// Web Server Port
+web_port: 8888
+
+// Database connection (should match inter_conf.txt)
+sql.db_hostname: db
+sql.db_port: 3306
+sql.db_username: ragnarok
+sql.db_password: ragnarok
+sql.db_database: ragnarok
+
+// Connection encoding
+default_codepage: utf8
+
+// Makes server output more silent by omitting certain types of messages
+console_silent: 0
+
+// Print requests and responses for debugging
+console: 3
+
+// Time-stamp format
+//timestamp_format: [%d/%b %H:%M]
+
+// If redirected output contains escape sequences (color codes)
+stdout_with_ansisequence: no
+
+// Console message logging
+console_msg_log: 0
+console_log_filepath: ./log/web-msg_log.log

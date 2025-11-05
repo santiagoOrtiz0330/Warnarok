@@ -1,0 +1,29 @@
+# Basado en tu Dockerfile existente pero optimizado para Railway
+FROM alpine:3.11
+
+WORKDIR /rathena
+
+# Instalar dependencias (igual que tu Dockerfile actual)
+RUN apk add --no-cache wget git cmake make gcc g++ gdb zlib-dev mariadb-dev ca-certificates linux-headers bash valgrind netcat-openbsd
+
+# Instalar wait-for (igual que tu Dockerfile actual)
+RUN wget https://raw.githubusercontent.com/eficode/wait-for/v2.2.2/wait-for -O /bin/wait-for && chmod +x /bin/wait-for
+
+# Copiar el código fuente completo
+COPY . .
+
+# Compilar automáticamente (esto es lo que hace tu 'builder' service)
+RUN ./configure --enable-packetver=20200902 --enable-web-server
+RUN make clean server
+
+# Crear directorio de logs
+RUN mkdir -p /rathena/log
+
+# Exponer puertos
+EXPOSE 6900 6121 5121 8888
+
+# Script de inicio que ejecuta todos los servicios
+COPY start-railway.sh /start-railway.sh
+RUN chmod +x /start-railway.sh
+
+CMD ["/start-railway.sh"]

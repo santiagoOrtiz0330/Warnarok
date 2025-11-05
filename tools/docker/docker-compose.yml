@@ -31,7 +31,7 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            BUILDER_CONFIGURE: "--enable-packetver=20200902"
+            BUILDER_CONFIGURE: "--enable-packetver=20200902 --enable-web-server"
     
     login:
         image: "rathena:local"
@@ -90,6 +90,25 @@ services:
             dockerfile: Dockerfile
         depends_on:
             - char
-
+    web:
+        image: "rathena:local"
+        container_name: "rathena-web"
+        command: sh -c "/bin/wait-for db:3306 -- /rathena/web-server"
+        ports:
+            - "8888:8888" #web server
+        volumes:
+            - "../..:/rathena"
+            - "./asset/inter_conf.txt:/rathena/conf/import/inter_conf.txt"
+            - "./asset/char_conf.txt:/rathena/conf/import/char_conf.txt"
+            - "./asset/map_conf.txt:/rathena/conf/import/map_conf.txt"
+            - "./asset/web_conf.txt:/rathena/conf/import/web_conf.txt"
+        init: true
+        tty: true
+        stdin_open: true
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - db
 volumes:
     rathenadb:
