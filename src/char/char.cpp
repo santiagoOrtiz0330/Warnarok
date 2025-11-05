@@ -2746,6 +2746,9 @@ void char_set_defaults(){
 	charserv_config.bind_ip = INADDR_ANY;
 	charserv_config.char_port = 6121;
 	charserv_config.advertise_port = 6121;  // Default same as char_port
+	charserv_config.advertise_host_str[0] = '\0';
+	charserv_config.advertise_ip = 0;
+	charserv_config.advertise_host_overridden = false;
 	charserv_config.char_maintenance = 0;
 	charserv_config.char_new = true;
 	charserv_config.char_new_display = 0;
@@ -2895,6 +2898,26 @@ void char_config_split_startitem(char *w1_value, char *w2_value, struct startite
 	aFree(fields);
 }
 
+static void char_config_refresh_advertise_endpoints(void) {
+	if (!charserv_config.advertise_host_overridden) {
+		charserv_config.advertise_ip = charserv_config.char_ip;
+		if (charserv_config.char_ip_str[0] != '\0') {
+			safestrncpy(charserv_config.advertise_host_str, charserv_config.char_ip_str, sizeof(charserv_config.advertise_host_str));
+		} else {
+			charserv_config.advertise_host_str[0] = '\0';
+		}
+	} else if (!charserv_config.advertise_ip && charserv_config.advertise_host_str[0] != '\0') {
+		uint32 resolved = host2ip(charserv_config.advertise_host_str);
+		if (resolved) {
+			charserv_config.advertise_ip = resolved;
+		}
+	}
+
+	if (!charserv_config.advertise_port) {
+		charserv_config.advertise_port = charserv_config.char_port;
+	}
+}
+
 bool char_config_read(const char* cfgName, bool normal){
 	char line[1024], w1[1024], w2[1024];
 	FILE* fp = fopen(cfgName, "r");
@@ -2954,6 +2977,16 @@ bool char_config_read(const char* cfgName, bool normal){
 			} else if (strcmpi(w1, "advertise_port") == 0) {
 				// Custom: Use different port for advertising to login server
 				charserv_config.advertise_port = atoi(w2);
+			} else if (strcmpi(w1, "advertise_host") == 0) {
+				charserv_config.advertise_host_overridden = true;
+				safestrncpy(charserv_config.advertise_host_str, w2, sizeof(charserv_config.advertise_host_str));
+				charserv_config.advertise_ip = host2ip(w2);
+				if (charserv_config.advertise_ip) {
+					char ip_str[16];
+					ShowStatus("Character advertise host : %s -> %s\n", w2, ip2str(charserv_config.advertise_ip, ip_str));
+				} else {
+					ShowWarning("Unable to resolve advertise_host '%s'; will fall back to char_ip unless it becomes resolvable later.\n", w2);
+				}
 			} else if (strcmpi(w1, "console") == 0) {
 				charserv_config.console = config_switch(w2);
 			}
@@ -3104,6 +3137,8 @@ bool char_config_read(const char* cfgName, bool normal){
 	}
 	fclose(fp);
 
+	char_config_refresh_advertise_endpoints();
+
 	ShowInfo("Done reading %s.\n", cfgName);
 	return true;
 }
@@ -3216,6 +3251,8 @@ bool CharacterServer::initialize( int32 argc, char *argv[] ){
 			charserv_config.char_ip = str2ip(charserv_config.char_ip_str);
 		}
 	}
+
+	char_config_refresh_advertise_endpoints();
 
 	do_init_chlogif();
 	do_init_chmapif();

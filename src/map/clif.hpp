@@ -862,6 +862,8 @@ enum e_changestate_pet : uint8 {
 int32 clif_setip(const char* ip);
 void clif_setbindip(const char* ip);
 void clif_setport(uint16 port);
+int32 clif_set_advertise_host(const char* host);
+void clif_set_advertise_port(uint16 port);
 
 uint32 clif_getip(void);
 uint32 clif_refresh_ip(void);

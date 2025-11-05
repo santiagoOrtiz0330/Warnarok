@@ -121,6 +121,7 @@ CHAR_PUBLIC_IP=${RATHENA_CHAR_PUBLIC_IP:-66.33.22.230}
 CHAR_LISTEN_PORT=${RATHENA_CHAR_LISTEN_PORT:-6121}
 # External public port (advertised to clients, Railway TCP proxy forwards 55237->6121)
 CHAR_PUBLIC_PORT=${RATHENA_CHAR_PUBLIC_PORT:-55237}
+CHAR_ADVERTISE_HOST=${RATHENA_CHAR_ADVERTISE_HOST:-${CHAR_PUBLIC_IP}}
 CHAR_LOGIN_IP=${RATHENA_CHAR_LOGIN_IP:-warnarok-copy.railway.internal}
 CHAR_LOGIN_PORT=${RATHENA_CHAR_LOGIN_PORT:-6900}
 
@@ -130,6 +131,7 @@ MAP_PUBLIC_IP=${RATHENA_MAP_PUBLIC_IP:-66.33.22.248}
 MAP_LISTEN_PORT=${RATHENA_MAP_LISTEN_PORT:-5121}
 # External public port (advertised to clients, Railway TCP proxy forwards 12246->5121)
 MAP_PUBLIC_PORT=${RATHENA_MAP_PUBLIC_PORT:-12246}
+MAP_ADVERTISE_HOST=${RATHENA_MAP_ADVERTISE_HOST:-${MAP_PUBLIC_IP}}
 MAP_CHAR_IP=${RATHENA_MAP_CHAR_IP:-warnarok-castri-6121.railway.internal}
 MAP_CHAR_PORT=${RATHENA_MAP_CHAR_PORT:-55237}
 
@@ -162,6 +164,7 @@ cat > "${IMPORT_DIR}/99-railway-network-char.conf" <<EOF
 login_ip: ${CHAR_LOGIN_IP}
 login_port: ${CHAR_LOGIN_PORT}
 char_ip: ${CHAR_PUBLIC_IP}
+advertise_host: ${CHAR_ADVERTISE_HOST}
 char_port: ${CHAR_LISTEN_PORT}
 advertise_port: ${CHAR_PUBLIC_PORT}
 bind_ip: ${CHAR_BIND_IP}
@@ -178,7 +181,9 @@ cat > "${IMPORT_DIR}/99-railway-network-map.conf" <<EOF
 char_ip: ${MAP_CHAR_IP}
 char_port: ${MAP_CHAR_PORT}
 map_ip: ${MAP_PUBLIC_IP}
-map_port: ${MAP_PUBLIC_PORT}
+advertise_host: ${MAP_ADVERTISE_HOST}
+map_port: ${MAP_LISTEN_PORT}
+advertise_port: ${MAP_PUBLIC_PORT}
 bind_ip: ${MAP_BIND_IP}
 EOF
 
@@ -196,7 +201,9 @@ login_port: ${LOGIN_PORT}
 login_ip: ${CHAR_LOGIN_IP}
 login_port: ${CHAR_LOGIN_PORT}
 char_ip: ${CHAR_PUBLIC_IP}
-char_port: ${CHAR_PUBLIC_PORT}
+advertise_host: ${CHAR_ADVERTISE_HOST}
+char_port: ${CHAR_LISTEN_PORT}
+advertise_port: ${CHAR_PUBLIC_PORT}
 bind_ip: ${CHAR_BIND_IP}
 port: ${CHAR_LISTEN_PORT}
 
@@ -204,7 +211,9 @@ port: ${CHAR_LISTEN_PORT}
 char_ip: ${MAP_CHAR_IP}
 char_port: ${MAP_CHAR_PORT}
 map_ip: ${MAP_PUBLIC_IP}
-map_port: ${MAP_PUBLIC_PORT}
+advertise_host: ${MAP_ADVERTISE_HOST}
+map_port: ${MAP_LISTEN_PORT}
+advertise_port: ${MAP_PUBLIC_PORT}
 bind_ip: ${MAP_BIND_IP}
 port: ${MAP_LISTEN_PORT}
 EOF

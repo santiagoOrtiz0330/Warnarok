@@ -4048,11 +4048,15 @@ int32 map_config_read(const char *cfgName)
 			chrif_setport(atoi(w2));
 		else if (strcmpi(w1, "map_ip") == 0)
 			map_ip_set = clif_setip(w2);
+		else if (strcmpi(w1, "advertise_host") == 0)
+			map_ip_set = clif_set_advertise_host(w2) || map_ip_set;
 		else if (strcmpi(w1, "bind_ip") == 0)
 			clif_setbindip(w2);
 		else if (strcmpi(w1, "map_port") == 0) {
 			clif_setport(atoi(w2));
 			map_port = (atoi(w2));
+		} else if (strcmpi(w1, "advertise_port") == 0) {
+			clif_set_advertise_port(atoi(w2));
 		} else if (strcmpi(w1, "map") == 0)
 			map_addmap(w2);
 		else if (strcmpi(w1, "delmap") == 0)

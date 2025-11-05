@@ -636,10 +636,24 @@ int32 chlogif_parse_updip(int32 fd){
 	if (new_ip && new_ip != charserv_config.char_ip) { // Char-server IP is updated.
 		charserv_config.char_ip = new_ip;
 		ShowInfo("Updating IP for [%s].\n", charserv_config.char_ip_str);
+		if (!charserv_config.advertise_host_overridden) {
+			charserv_config.advertise_ip = charserv_config.char_ip;
+			if (charserv_config.char_ip_str[0] != '\0') {
+				safestrncpy(charserv_config.advertise_host_str, charserv_config.char_ip_str, sizeof(charserv_config.advertise_host_str));
+			} else {
+				charserv_config.advertise_host_str[0] = '\0';
+			}
+		} else if (!charserv_config.advertise_ip && charserv_config.advertise_host_str[0] != '\0') {
+			uint32 resolved = host2ip(charserv_config.advertise_host_str);
+			if (resolved) {
+				charserv_config.advertise_ip = resolved;
+			}
+		}
 		// notify login server about the change
 		WFIFOHEAD(fd,6);
 		WFIFOW(fd,0) = 0x2736;
-		WFIFOL(fd,2) = htonl(charserv_config.char_ip);
+		uint32 advertise_ip = charserv_config.advertise_ip ? charserv_config.advertise_ip : charserv_config.char_ip;
+		WFIFOL(fd,2) = htonl(advertise_ip);
 		WFIFOSET(fd,6);
 	}
 
@@ -809,8 +823,10 @@ TIMER_FUNC(chlogif_check_connect_logserver){
 	memcpy(WFIFOP(login_fd,2), charserv_config.userid, 24);
 	memcpy(WFIFOP(login_fd,26), charserv_config.passwd, 24);
 	WFIFOL(login_fd,50) = 0;
-	WFIFOL(login_fd,54) = htonl(charserv_config.char_ip);
-	WFIFOW(login_fd,58) = htons(charserv_config.char_port);
+	uint32 advertise_ip = charserv_config.advertise_ip ? charserv_config.advertise_ip : charserv_config.char_ip;
+	uint16 advertise_port = charserv_config.advertise_port ? charserv_config.advertise_port : charserv_config.char_port;
+	WFIFOL(login_fd,54) = htonl(advertise_ip);
+	WFIFOW(login_fd,58) = htons(advertise_port);
 	memcpy(WFIFOP(login_fd,60), charserv_config.server_name, 20);
 	WFIFOW(login_fd,80) = 0;
 	WFIFOW(login_fd,82) = charserv_config.char_maintenance;

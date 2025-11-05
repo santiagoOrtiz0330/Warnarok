@@ -270,10 +270,35 @@ static char map_ip_str[128];
 static uint32 map_ip;
 static uint32 bind_ip = INADDR_ANY;
 static uint16 map_port = 5121;
+static char advertise_host_str[128];
+static uint32 advertise_ip = 0;
+static bool advertise_host_overridden = false;
+static uint16 advertise_port = 5121;
+static bool advertise_port_overridden = false;
 static bool clif_ally_only = false;
 int32 map_fd;
 
 static int32 clif_parse (int32 fd);
+
+static void clif_refresh_advertise_defaults(void) {
+	if (!advertise_host_overridden) {
+		advertise_ip = map_ip;
+		if (map_ip_str[0] != '\0') {
+			safestrncpy(advertise_host_str, map_ip_str, sizeof(advertise_host_str));
+		} else {
+			advertise_host_str[0] = '\0';
+		}
+	} else if (!advertise_ip && advertise_host_str[0] != '\0') {
+		uint32 resolved = host2ip(advertise_host_str);
+		if (resolved) {
+			advertise_ip = resolved;
+		}
+	}
+
+	if (!advertise_port_overridden || advertise_port == 0) {
+		advertise_port = map_port;
+	}
+}
 
 /*==========================================
  * Ip setting of map-server
@@ -281,13 +306,27 @@ static int32 clif_parse (int32 fd);
 int32 clif_setip(const char* ip) {
 	char ip_str[16];
 	map_ip = host2ip(ip);
+	if (!map_ip && strcmp(ip, "0.0.0.0") == 0) {
+		map_ip = INADDR_ANY;
+	}
+	if (!map_ip && strcmp(ip, "*") == 0) {
+		map_ip = INADDR_ANY;
+	}
 	if (!map_ip) {
 		ShowWarning("Failed to Resolve Map Server Address! (%s)\n", ip);
 		return 0;
 	}
 
-	safestrncpy(map_ip_str, ip, sizeof(map_ip_str));
-	ShowInfo("Map Server IP Address : '" CL_WHITE "%s" CL_RESET "' -> '" CL_WHITE "%s" CL_RESET "'.\n", ip, ip2str(map_ip, ip_str));
+	if (map_ip == INADDR_ANY) {
+		// For INADDR_ANY we still keep the literal string for logging/fallback
+		safestrncpy(map_ip_str, ip, sizeof(map_ip_str));
+		ShowInfo("Map Server will listen on all interfaces (configured '%s').\n", ip);
+	} else {
+		safestrncpy(map_ip_str, ip, sizeof(map_ip_str));
+		ShowInfo("Map Server IP Address : '" CL_WHITE "%s" CL_RESET "' -> '" CL_WHITE "%s" CL_RESET "'.\n", ip, ip2str(map_ip, ip_str));
+	}
+
+	clif_refresh_advertise_defaults();
 	return 1;
 }
 
@@ -309,6 +348,28 @@ void clif_setbindip(const char* ip)
 void clif_setport(uint16 port)
 {
 	map_port = port;
+	if (!advertise_port_overridden || advertise_port == 0) {
+		advertise_port = port;
+	}
+}
+
+int32 clif_set_advertise_host(const char* host) {
+	advertise_host_overridden = true;
+	safestrncpy(advertise_host_str, host, sizeof(advertise_host_str));
+	advertise_ip = host2ip(host);
+	if (advertise_ip) {
+		char ip_str[16];
+		ShowInfo("Map Server advertise host : '" CL_WHITE "%s" CL_RESET "' -> '" CL_WHITE "%s" CL_RESET "'.\n", host, ip2str(advertise_ip, ip_str));
+		return 1;
+	}
+
+	ShowWarning("Failed to resolve map advertise_host '%s'; will retry periodically while falling back to map_ip.\n", host);
+	return 0;
+}
+
+void clif_set_advertise_port(uint16 port) {
+	advertise_port_overridden = true;
+	advertise_port = port ? port : map_port;
 }
 
 /*==========================================
@@ -316,7 +377,7 @@ void clif_setport(uint16 port)
  *------------------------------------------*/
 uint32 clif_getip(void)
 {
-	return map_ip;
+	return advertise_ip ? advertise_ip : map_ip;
 }
 
 //Refreshes map_server ip, returns the new ip if the ip changed, otherwise it returns 0.
@@ -324,10 +385,21 @@ uint32 clif_refresh_ip(void)
 {
 	uint32 new_ip;
 
+	if (advertise_host_overridden && advertise_host_str[0] != '\0') {
+		new_ip = host2ip(advertise_host_str);
+		if (new_ip && new_ip != advertise_ip) {
+			advertise_ip = new_ip;
+			ShowInfo("Updating advertised map IP resolution of [%s].\n", advertise_host_str);
+			return advertise_ip;
+		}
+		return 0;
+	}
+
 	new_ip = host2ip(map_ip_str);
 	if (new_ip && new_ip != map_ip) {
 		map_ip = new_ip;
 		ShowInfo("Updating IP resolution of [%s].\n", map_ip_str);
+		clif_refresh_advertise_defaults();
 		return map_ip;
 	}
 	return 0;
@@ -338,7 +410,7 @@ uint32 clif_refresh_ip(void)
  *------------------------------------------*/
 uint16 clif_getport(void)
 {
-	return map_port;
+	return advertise_port ? advertise_port : map_port;
 }
 
 #if PACKETVER >= 20071106

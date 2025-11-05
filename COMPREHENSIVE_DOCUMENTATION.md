@@ -416,6 +416,11 @@ mob_skill_db       -- Monster skills
 - `map_athena.conf` - Map server settings
 - `inter_athena.conf` - Inter-server communication
 
+#### NAT / Public Endpoint Overrides
+- `char_athena.conf` supports `advertise_host` and `advertise_port` so the character server can listen on an internal address/port while telling the login server and clients which public endpoint to use.
+- `map_athena.conf` provides the same `advertise_host` / `advertise_port` pair for map servers to advertise the external endpoint clients must reach.
+- When omitted, both servers fall back to the legacy behavior of reusing `char_ip` / `char_port` and `map_ip` / `map_port`, ensuring existing flat-network setups continue to work.
+
 #### Game Balance
 - `battle_athena.conf` - Core battle system
 - `battle/*.conf` - Detailed balance settings
