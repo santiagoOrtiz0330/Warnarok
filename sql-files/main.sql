@@ -786,6 +786,7 @@ CREATE TABLE IF NOT EXISTS `login` (
   `old_group` tinyint(3) NOT NULL default '0',
   `web_auth_token` varchar(17) null,
   `web_auth_token_enabled` tinyint(2) NOT NULL default '0',
+  `prueba` varchar(17) DEFAULT NULL,
   PRIMARY KEY  (`account_id`),
   KEY `name` (`userid`),
   UNIQUE KEY `web_auth_token_key` (`web_auth_token`)
@@ -1149,3 +1150,94 @@ CREATE TABLE IF NOT EXISTS `vendings` (
   `autotrade` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
+
+--
+-- Table structure for table `woe_damage_log`
+--
+
+CREATE TABLE `woe_damage_log` (
+  `id` int NOT NULL auto_increment,
+  `timestamp` datetime NOT NULL,
+  `attacker_char_id` int NOT NULL,
+  `attacker_guild_id` int NOT NULL,
+  `attacker_skill_id` int NOT NULL,
+  `attacker_skill_lv` tinyint NOT NULL,
+  `attacker_damage` int unsigned DEFAULT NULL,
+  `target_char_id` int NOT NULL,
+  `target_guild_id` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+--
+-- Table structure for table `woe_kill_log`
+--
+
+CREATE TABLE `woe_kill_log` (
+  `id` int NOT NULL auto_increment,
+  `timestamp` datetime NOT NULL,
+  `attacker_char_id` int NOT NULL,
+  `attacker_guild_id` int NOT NULL,
+  `attacker_skill_id` int NOT NULL,
+  `attacker_skill_lv` tinyint NOT NULL,
+  `victim_char_id` int NOT NULL,
+  `victim_guild_id` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+--
+-- Table structure for table `woe_kill_log`
+--
+
+CREATE TABLE `woe_skill_log` (
+  `id` int NOT NULL auto_increment,
+  `timestamp` datetime NOT NULL,
+  `char_id` int NOT NULL,
+  `guild_id` int NOT NULL,
+  `skill_id` int NOT NULL,
+  `skill_lv` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+
+--
+-- Table structure for table `woe_skill_recovery_log`
+--
+
+CREATE TABLE `woe_skill_recovery_log` (
+  `id` int NOT NULL auto_increment,
+  `timestamp` datetime NOT NULL,
+  `source_char_id` int NOT NULL,
+  `source_guild_id` int NOT NULL,
+  `source_skill_id` int NOT NULL,
+  `source_skill_lv` tinyint NOT NULL,
+  `recovery` int unsigned DEFAULT NULL,
+  `target_char_id` int NOT NULL,
+  `target_guild_id` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+
+CREATE TABLE `woe_skills_db` (
+  `id` int NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+
+
+--
+-- Table structure for table `woe_usable_item_log`
+--
+
+CREATE TABLE `woe_usable_item_log` (
+  `id` int NOT NULL auto_increment,
+  `timestamp` datetime NOT NULL,
+  `char_id` int NOT NULL,
+  `guild_id` int NOT NULL,
+  `item_type` int NOT NULL,
+  `item_id` int NOT NULL,
+  `recovery_hp` int NOT NULL,
+  `recovery_sp` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM;
+

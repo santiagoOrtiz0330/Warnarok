@@ -178,7 +178,7 @@ void save_damage_log_local(block_list *src, block_list *target, int64 damage, ui
 				FILE *log_file = fopen(full_log_path.c_str(), "a"); // `c_str()` convierte `std::string` a `const char*`
 
 				if (log_file) {
-					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%d\n",
+					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%ld\n",
 						time_str, sd->status.char_id, attacker_guild_id, skill_id, skill_lv, tsd->status.char_id, target_guild_id, damage);
 					fclose(log_file);
 				}
@@ -209,7 +209,7 @@ void save_damage_log_db(void){
 
 
 		while (fgets(line, sizeof(line), log_file)) {
-			if (sscanf(line, "%31[^|]|%d|%d|%d|%d|%d|%d|%d",
+			if (sscanf(line, "%31[^|]|%d|%d|%d|%d|%d|%d|%ld",
 						time_str, &attacker_char_id, &attacker_guild_id, &attacker_skill_id, &attacker_skill_lv, &target_char_id, &target_guild_id, &attacker_damage) == 8) {
 	
 				// Si ya se agregó al menos una fila, agrega una coma para separar los valores
@@ -380,7 +380,7 @@ void save_skill_recovery_log_local(block_list *src, block_list *target, int64 re
 				FILE *log_file = fopen(full_log_path.c_str(), "a");
 
 				if (log_file) {
-					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%d\n",
+					fprintf(log_file, "%s|%d|%d|%d|%d|%d|%d|%ld\n",
 						time_str, sd->status.char_id, source_guild_id, skill_id, skill_lv, tsd->status.char_id, target_guild_id, recovery);
 					fclose(log_file);
 				}
@@ -413,7 +413,7 @@ void save_skill_recovery_log_db(void) {
         while (fgets(line, sizeof(line), log_file)) {
             // Se asume que el formato es:
             // time_str|source_char_id|source_guild_id|source_skill_id|source_skill_lv|target_char_id|target_guild_id|recovery
-            if (sscanf(line, "%31[^|]|%d|%d|%d|%d|%d|%d|%d",
+            if (sscanf(line, "%31[^|]|%d|%d|%d|%d|%d|%d|%ld",
                        time_str,
                        &source_char_id,
                        &source_guild_id,

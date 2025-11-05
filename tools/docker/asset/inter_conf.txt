@@ -1,5 +1,34 @@
+// Login Server DB
 login_server_ip: db
+login_server_port: 3306
+login_server_id: ragnarok
+login_server_pw: ragnarok
+login_server_db: ragnarok
+
+// IP Ban DB  
 ipban_db_ip: db
+ipban_db_port: 3306
+ipban_db_id: ragnarok
+ipban_db_pw: ragnarok
+ipban_db_db: ragnarok
+
+// Character Server DB
 char_server_ip: db
+char_server_port: 3306
+char_server_id: ragnarok
+char_server_pw: ragnarok
+char_server_db: ragnarok
+
+// Map Server DB
 map_server_ip: db
+map_server_port: 3306
+map_server_id: ragnarok
+map_server_pw: ragnarok
+map_server_db: ragnarok
+
+// Log DB
 log_db_ip: db
+log_db_port: 3306
+log_db_id: ragnarok
+log_db_pw: ragnarok
+log_db_db: ragnarok
