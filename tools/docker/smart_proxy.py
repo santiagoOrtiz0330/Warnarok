@@ -16,7 +16,7 @@ from typing import Optional
 LOGIN_PORT = int(os.environ.get("RATHENA_LOGIN_PORT", "6900"))
 CHAR_PORT = int(os.environ.get("RATHENA_CHAR_PORT", "6121"))
 MAP_PORT = int(os.environ.get("RATHENA_MAP_PORT", "5121"))
-LISTEN_PORT = int(os.environ.get("PORT", os.environ.get("RAILWAY_TCP_PROXY_PORT", "6900")))
+LISTEN_PORT = int(os.environ.get("RAILWAY_TCP_PROXY_PORT", os.environ.get("PORT", "6900")))
 BUFFER_SIZE = 1024
 READ_TIMEOUT = float(os.environ.get("SMART_PROXY_READ_TIMEOUT", "3.0"))
 
