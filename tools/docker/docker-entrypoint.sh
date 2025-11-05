@@ -25,6 +25,14 @@ generate_railway_config() {
     
     echo "Railway TCP Proxy: ${RAILWAY_TCP_PROXY_DOMAIN}:${RAILWAY_TCP_PROXY_PORT}"
     echo "Database: ${DB_HOST}:${DB_PORT}"
+    echo ""
+    echo "=== SINGLE-SERVICE DEPLOYMENT ==="
+    echo "All clients connect to: ${RAILWAY_TCP_PROXY_DOMAIN}:${RAILWAY_TCP_PROXY_PORT}"
+    echo "Internal routing:"
+    echo "  - Login: 127.0.0.1:${RAILWAY_TCP_PROXY_PORT} (external clients)"
+    echo "  - Char: 127.0.0.1:6121 (internal + advertised externally)"  
+    echo "  - Map: 127.0.0.1:5121 (internal + advertised externally)"
+    echo "==============================="
     
     # Create inter-server config for Railway
     mkdir -p conf/import
@@ -63,10 +71,13 @@ EOF
 
     # Login server config - external client connections
     cat > conf/import/railway_login.conf <<EOF
-// Railway login server config
+// Railway login server config  
 bind_ip: 0.0.0.0
 login_port: ${RAILWAY_TCP_PROXY_PORT}
-char_server_ip: 127.0.0.1
+// SOLUTION: Use standard Ragnarok ports on Railway domain
+// Client will try to connect to char server on port 6121
+// Railway needs to expose BOTH ports: ${RAILWAY_TCP_PROXY_PORT} (login) AND 6121 (char)
+char_server_ip: ${RAILWAY_TCP_PROXY_DOMAIN}
 char_server_port: 6121
 console_msg_log: 7
 EOF
@@ -75,7 +86,7 @@ EOF
     cat > conf/import/railway_char.conf <<EOF
 // Railway char server config  
 login_ip: 127.0.0.1
-login_port: ${RAILWAY_TCP_PROXY_PORT}
+login_port: 6900
 bind_ip: 127.0.0.1
 char_ip: 127.0.0.1
 char_port: 6121
