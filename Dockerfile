@@ -10,12 +10,14 @@ WORKDIR /app
 # Copiamos solo los archivos de compilación
 COPY src/ ./src/
 COPY conf/ ./conf/
+COPY 3rdparty/ ./3rdparty/
 COPY CMakeLists.txt .
 COPY configure .
-COPY Makefile .
+COPY Makefile.in .
+COPY configure.ac .
 
 # Compilación rápida y paralela
-RUN ./configure && make sql -j$(nproc)
+RUN ./configure && make server -j$(nproc)
 
 # -----------------------------
 # Etapa 2: Imagen final
@@ -30,10 +32,11 @@ COPY --from=builder /app/login-server /app/char-server /app/map-server /app/
 COPY conf/ ./conf/
 COPY npc/ ./npc/
 COPY db/ ./db/
+COPY docker-entrypoint.sh .
 COPY start-server.sh .
 
-RUN chmod +x start-server.sh
+RUN chmod +x start-server.sh docker-entrypoint.sh
 
 EXPOSE 6900 6121 5121
 
-CMD ["./start-server.sh"]
+CMD ["./docker-entrypoint.sh"]
