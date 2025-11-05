@@ -13,18 +13,18 @@ PUBLIC_IP=$(curl -s ifconfig.me || echo "unknown")
 echo "Public IP: $PUBLIC_IP"
 
 # Crear directorios necesarios
-mkdir -p /rathena/conf/import
-mkdir -p /rathena/logs  # NUEVO: directorio para logs separados
+mkdir -p conf/import
+mkdir -p logs  # NUEVO: directorio para logs separados
 
 # Copiar templates como base
 echo "Copying configuration templates..."
-cp /rathena/conf/import-tmpl/* /rathena/conf/import/ 2>/dev/null || echo "No templates to copy"
+cp conf/import-tmpl/* conf/import/ 2>/dev/null || echo "No templates to copy"
 
 # Crear configuraciones específicas para Railway
 echo "Creating Railway-specific configurations..."
 
 # Inter configuration (database)
-cat > /rathena/conf/import/inter_conf.txt << EOF
+cat > conf/import/inter_conf.txt << EOF
 // Database configuration for Railway
 sql.db_hostname: ${DATABASE_HOST}
 sql.db_port: ${DATABASE_PORT}
@@ -55,7 +55,7 @@ map_server_db: ${DATABASE_NAME}
 EOF
 
 # Login configuration
-cat > /rathena/conf/import/login_conf.txt << EOF
+cat > conf/import/login_conf.txt << EOF
 // Login server configuration for Railway
 
 // Bind to all interfaces para recibir conexiones
@@ -73,7 +73,7 @@ webtoken_expiration_time: 300000
 EOF
 
 # Char configuration - CLAVE: usar IP interna para comunicación interna
-cat > /rathena/conf/import/char_conf.txt << EOF
+cat > conf/import/char_conf.txt << EOF
 // Character server configuration for Railway
 
 // Bind to all interfaces para recibir conexiones
@@ -85,12 +85,12 @@ login_ip: 127.0.0.1
 login_port: 6900
 
 // IMPORTANTE: IP que se reporta al login server (debe ser IP interna)
-char_server_ip: 127.0.0.1
+char_server_ip: 0.0.0.0
 char_server_port: 6121
 EOF
 
 # Map configuration
-cat > /rathena/conf/import/map_conf.txt << EOF
+cat > conf/import/map_conf.txt << EOF
 // Map server configuration for Railway
 map_ip: 0.0.0.0
 map_port: 5121
@@ -101,7 +101,7 @@ char_port: 6121
 EOF
 
 # Web configuration
-cat > /rathena/conf/import/web_conf.txt << EOF
+cat > conf/import/web_conf.txt << EOF
 // Web server configuration for Railway
 bind_ip: 0.0.0.0
 web_port: 8888
@@ -138,7 +138,7 @@ fi
 start_service() {
     local service_name=$1
     local executable=$2
-    local logfile="/rathena/logs/${service_name}.out"
+    local logfile="logs/${service_name}.out"
     
     echo "Starting $service_name..."
     
@@ -187,32 +187,32 @@ ps aux | grep -E "(login|char|map|web)-server" | grep -v grep
 
 # CREAR SCRIPT para monitorear logs separados
 echo "Creating log monitoring script..."
-cat > /rathena/monitor-logs.sh << 'EOF'
+cat > monitor-logs.sh << 'EOF'
 #!/bin/bash
 case "$1" in
     login) 
         echo "=== LOGIN SERVER OUTPUT ==="
-        tail -f /rathena/logs/login.out
+        tail -f logs/login.out
         ;;
     char)  
         echo "=== CHAR SERVER OUTPUT ==="
-        tail -f /rathena/logs/char.out
+        tail -f logs/char.out
         ;;
     map)   
         echo "=== MAP SERVER OUTPUT ==="
-        tail -f /rathena/logs/map.out
+        tail -f logs/map.out
         ;;
     web)   
         echo "=== WEB SERVER OUTPUT ==="
-        tail -f /rathena/logs/web.out
+        tail -f logs/web.out
         ;;
     all)   
         echo "=== ALL SERVICES OUTPUT ==="
-        tail -f /rathena/logs/*.out
+        tail -f logs/*.out
         ;;
     list)
         echo "Available log files:"
-        ls -la /rathena/logs/
+        ls -la logs/
         ;;
     *)
         echo "Usage: $0 {login|char|map|web|all|list}"
@@ -226,13 +226,13 @@ case "$1" in
 esac
 EOF
 
-chmod +x /rathena/monitor-logs.sh
+chmod +x monitor-logs.sh
 
 # Mostrar información de uso
 echo ""
 echo "=== Log Files Created ==="
 echo "Individual service outputs are now available in:"
-ls -la /rathena/logs/ 2>/dev/null || echo "No log files created yet"
+ls -la logs/ 2>/dev/null || echo "No log files created yet"
 
 echo ""
 echo "=== How to Monitor Individual Services ==="
@@ -248,17 +248,17 @@ echo "  railway run ./monitor-logs.sh list    # Ver archivos disponibles"
 echo ""
 echo "=== Configuration Debug ==="
 echo "Char config:"
-head -10 /rathena/conf/import/char_conf.txt 2>/dev/null || echo "No char_conf.txt found"
+head -10 conf/import/char_conf.txt 2>/dev/null || echo "No char_conf.txt found"
 
 # Mostrar primeras líneas de cada log para verificar que funcionan
 echo ""
 echo "=== Initial Log Preview ==="
 sleep 5  # Dar tiempo a que se generen logs
 echo "Login server (first 3 lines):"
-head -3 /rathena/logs/login.out 2>/dev/null || echo "No login logs yet"
+head -3 logs/login.out 2>/dev/null || echo "No login logs yet"
 
 echo "Char server (first 3 lines):"
-head -3 /rathena/logs/char.out 2>/dev/null || echo "No char logs yet"
+head -3 logs/char.out 2>/dev/null || echo "No char logs yet"
 
 # Mantener el contenedor corriendo mostrando resumen
 echo ""
@@ -266,7 +266,7 @@ echo "=== Container Monitoring ==="
 echo "Services are running with separated logs. Use monitor-logs.sh to view individual outputs."
 
 # Mostrar tail de logs combinado como respaldo
-tail -f /rathena/logs/*.out 2>/dev/null &
+tail -f logs/*.out 2>/dev/null &
 
 # Esperar a que todos los procesos terminen
 wait
