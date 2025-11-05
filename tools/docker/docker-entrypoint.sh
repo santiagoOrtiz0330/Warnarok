@@ -88,8 +88,8 @@ EOF
 // Railway char server config  
 login_ip: 127.0.0.1
 login_port: 6900
-bind_ip: 127.0.0.1
-char_ip: 127.0.0.1
+bind_ip: 0.0.0.0
+char_ip: 0.0.0.0
 char_port: 6121
 advertise_host: ${PUBLIC_HOST}
 advertise_port: 6121
