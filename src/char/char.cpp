@@ -2745,6 +2745,7 @@ void char_set_defaults(){
 //	charserv_config.bind_ip_str[128];
 	charserv_config.bind_ip = INADDR_ANY;
 	charserv_config.char_port = 6121;
+	charserv_config.advertise_port = 6121;  // Default same as char_port
 	charserv_config.char_maintenance = 0;
 	charserv_config.char_new = true;
 	charserv_config.char_new_display = 0;
@@ -2950,6 +2951,9 @@ bool char_config_read(const char* cfgName, bool normal){
 				}
 			} else if (strcmpi(w1, "char_port") == 0) {
 				charserv_config.char_port = atoi(w2);
+			} else if (strcmpi(w1, "advertise_port") == 0) {
+				// Custom: Use different port for advertising to login server
+				charserv_config.advertise_port = atoi(w2);
 			} else if (strcmpi(w1, "console") == 0) {
 				charserv_config.console = config_switch(w2);
 			}
