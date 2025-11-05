@@ -187,6 +187,9 @@ start_servers() {
         fi
         if [[ -n "${PROXY_PID:-}" ]] && ! kill -0 "$PROXY_PID" 2>/dev/null; then
             echo "Smart proxy died! Shutting down..."
+            echo "--- proxy log (last 50 lines) ---"
+            tail -n 50 log/proxy.log 2>/dev/null || echo "No proxy log found."
+            echo "--------------------------------"
             kill $LOGIN_PID $CHAR_PID $MAP_PID 2>/dev/null || true
             exit 1
         fi
