@@ -201,7 +201,8 @@ void save_damage_log_db(void){
 	if (log_file) {
 		char line[256];
 		char time_str[32];
-		int attacker_char_id, attacker_guild_id, attacker_skill_id, attacker_skill_lv, target_char_id,target_guild_id, attacker_damage;
+		int attacker_char_id, attacker_guild_id, attacker_skill_id, attacker_skill_lv, target_char_id,target_guild_id;
+		long int attacker_damage;
 		char query[512];
 		std::stringstream ss;
         int count = 0;
@@ -404,7 +405,8 @@ void save_skill_recovery_log_db(void) {
         char line[256];
         char time_str[32];
         int source_char_id, source_guild_id, source_skill_id, source_skill_lv;
-        int target_char_id, target_guild_id, recovery;
+        int target_char_id, target_guild_id;
+		long int recovery;
         std::stringstream ss;
         int count = 0;
         const int BATCH_SIZE = 100; // Número de filas por lote
