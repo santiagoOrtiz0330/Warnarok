@@ -12,8 +12,9 @@ echo "Database Name: $DATABASE_NAME"
 PUBLIC_IP=$(curl -s ifconfig.me || echo "unknown")
 echo "Public IP: $PUBLIC_IP"
 
-# Crear directorio import si no existe
+# Crear directorios necesarios
 mkdir -p /rathena/conf/import
+mkdir -p /rathena/logs  # NUEVO: directorio para logs separados
 
 # Copiar templates como base
 echo "Copying configuration templates..."
@@ -133,10 +134,12 @@ else
     echo "WARNING: No database host specified!"
 fi
 
-# Función para iniciar un servicio con más debugging
+# FUNCIÓN MODIFICADA para separar outputs de cada servicio
 start_service() {
     local service_name=$1
     local executable=$2
+    local logfile="/rathena/logs/${service_name}.out"
+    
     echo "Starting $service_name..."
     
     # Verificar que el ejecutable existe
@@ -145,32 +148,36 @@ start_service() {
         return 1
     fi
     
-    ./$executable &
+    # CLAVE: Redirigir output de cada servicio a archivo separado
+    echo "Executing: ./$executable > $logfile 2>&1"
+    ./$executable > "$logfile" 2>&1 &
     local pid=$!
-    echo "$service_name started with PID $pid"
+    echo "$service_name started with PID $pid (output -> $logfile)"
     
     # Verificar que el proceso está corriendo
-    sleep 2
+    sleep 3
     if kill -0 $pid 2>/dev/null; then
         echo "✓ $service_name is running (PID: $pid)"
     else
         echo "✗ $service_name failed to start!"
+        echo "Error log:"
+        cat "$logfile" 2>/dev/null || echo "No error log available"
     fi
     
-    sleep 3
+    sleep 2
 }
 
-# Iniciar servicios en orden con verificaciones
-start_service "LOGIN" "login-server"
+# Iniciar servicios en orden con outputs separados
+start_service "login" "login-server"
 sleep 5  # Dar tiempo al login server
 
-start_service "CHAR" "char-server"  
+start_service "char" "char-server"  
 sleep 5  # Dar tiempo al char server para registrarse
 
-start_service "MAP" "map-server"
+start_service "map" "map-server"
 sleep 3
 
-start_service "WEB" "web-server"
+start_service "web" "web-server"
 
 echo "All services startup completed!"
 
@@ -178,14 +185,88 @@ echo "All services startup completed!"
 echo "=== Process Status ==="
 ps aux | grep -E "(login|char|map|web)-server" | grep -v grep
 
+# CREAR SCRIPT para monitorear logs separados
+echo "Creating log monitoring script..."
+cat > /rathena/monitor-logs.sh << 'EOF'
+#!/bin/bash
+case "$1" in
+    login) 
+        echo "=== LOGIN SERVER OUTPUT ==="
+        tail -f /rathena/logs/login.out
+        ;;
+    char)  
+        echo "=== CHAR SERVER OUTPUT ==="
+        tail -f /rathena/logs/char.out
+        ;;
+    map)   
+        echo "=== MAP SERVER OUTPUT ==="
+        tail -f /rathena/logs/map.out
+        ;;
+    web)   
+        echo "=== WEB SERVER OUTPUT ==="
+        tail -f /rathena/logs/web.out
+        ;;
+    all)   
+        echo "=== ALL SERVICES OUTPUT ==="
+        tail -f /rathena/logs/*.out
+        ;;
+    list)
+        echo "Available log files:"
+        ls -la /rathena/logs/
+        ;;
+    *)
+        echo "Usage: $0 {login|char|map|web|all|list}"
+        echo ""
+        echo "Examples:"
+        echo "  railway run ./monitor-logs.sh char    # Ver output del char server"
+        echo "  railway run ./monitor-logs.sh login   # Ver output del login server"
+        echo "  railway run ./monitor-logs.sh all     # Ver output de todos"
+        echo "  railway run ./monitor-logs.sh list    # Ver archivos disponibles"
+        ;;
+esac
+EOF
+
+chmod +x /rathena/monitor-logs.sh
+
+# Mostrar información de uso
+echo ""
+echo "=== Log Files Created ==="
+echo "Individual service outputs are now available in:"
+ls -la /rathena/logs/ 2>/dev/null || echo "No log files created yet"
+
+echo ""
+echo "=== How to Monitor Individual Services ==="
+echo "To view real-time output of each service:"
+echo "  railway run ./monitor-logs.sh char    # Ver char server output"
+echo "  railway run ./monitor-logs.sh login   # Ver login server output"
+echo "  railway run ./monitor-logs.sh map     # Ver map server output"
+echo "  railway run ./monitor-logs.sh web     # Ver web server output"
+echo "  railway run ./monitor-logs.sh all     # Ver todos juntos"
+echo "  railway run ./monitor-logs.sh list    # Ver archivos disponibles"
+
 # Mostrar contenido de configuraciones para debugging
+echo ""
 echo "=== Configuration Debug ==="
 echo "Char config:"
 head -10 /rathena/conf/import/char_conf.txt 2>/dev/null || echo "No char_conf.txt found"
 
-# Mantener el contenedor corriendo y mostrar logs
-echo "Monitoring services..."
-tail -f log/*.log 2>/dev/null &
+# Mostrar primeras líneas de cada log para verificar que funcionan
+echo ""
+echo "=== Initial Log Preview ==="
+sleep 5  # Dar tiempo a que se generen logs
+echo "Login server (first 3 lines):"
+head -3 /rathena/logs/login.out 2>/dev/null || echo "No login logs yet"
+
+echo "Char server (first 3 lines):"
+head -3 /rathena/logs/char.out 2>/dev/null || echo "No char logs yet"
+
+# Mantener el contenedor corriendo mostrando resumen
+echo ""
+echo "=== Container Monitoring ==="
+echo "Services are running with separated logs. Use monitor-logs.sh to view individual outputs."
+
+# Mostrar tail de logs combinado como respaldo
+tail -f /rathena/logs/*.out 2>/dev/null &
 
 # Esperar a que todos los procesos terminen
 wait
