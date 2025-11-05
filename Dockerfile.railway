@@ -36,13 +36,13 @@ COPY conf/ conf/
 COPY db/ db/
 COPY sql-files/ sql-files/
 COPY npc/ npc/
-COPY log/ log/
+# COPY log/ log/  <- ELIMINAR ESTA LÍNEA
 
 # Script de inicio
 COPY start-railway.sh /start-railway.sh
 RUN chmod +x /start-railway.sh
 
-# Crear directorio de logs
+# Crear directorio de logs (se crea automáticamente)
 RUN mkdir -p /rathena/log
 
 # Exponer puertos
