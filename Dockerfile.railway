@@ -1,29 +1,51 @@
-# Basado en tu Dockerfile existente pero optimizado para Railway
+# Build stage - se cachea si no hay cambios en código fuente
+FROM alpine:3.11 AS builder
+
+WORKDIR /rathena
+
+# Instalar dependencias de build
+RUN apk add --no-cache wget git cmake make gcc g++ gdb zlib-dev mariadb-dev ca-certificates linux-headers bash
+
+# Copiar solo archivos necesarios para configure (se cachea si no cambian)
+COPY configure Makefile.in ./
+COPY src/ src/
+COPY 3rdparty/ 3rdparty/
+
+# Configure (se cachea si configure no cambia)
+RUN ./configure --enable-packetver=20200902 --enable-web-server
+
+# Build solo lo que cambió
+RUN make server
+
+# Runtime stage - mucho más pequeño y rápido
 FROM alpine:3.11
 
 WORKDIR /rathena
 
-# Instalar dependencias (igual que tu Dockerfile actual)
-RUN apk add --no-cache wget git cmake make gcc g++ gdb zlib-dev mariadb-dev ca-certificates linux-headers bash valgrind netcat-openbsd
+# Instalar solo dependencias de runtime
+RUN apk add --no-cache wget mariadb-client bash gettext netcat-openbsd
 
-# Instalar wait-for (igual que tu Dockerfile actual)
+# Instalar wait-for
 RUN wget https://raw.githubusercontent.com/eficode/wait-for/v2.2.2/wait-for -O /bin/wait-for && chmod +x /bin/wait-for
 
-# Copiar el código fuente completo
-COPY . .
+# Copiar binarios compilados desde build stage
+COPY --from=builder /rathena/login-server /rathena/char-server /rathena/map-server /rathena/web-server ./
 
-# Compilar automáticamente (esto es lo que hace tu 'builder' service)
-RUN ./configure --enable-packetver=20200902 --enable-web-server
-RUN make clean server
+# Copiar archivos de configuración y datos
+COPY conf/ conf/
+COPY db/ db/
+COPY sql-files/ sql-files/
+COPY npc/ npc/
+COPY log/ log/
+
+# Script de inicio
+COPY start-railway.sh /start-railway.sh
+RUN chmod +x /start-railway.sh
 
 # Crear directorio de logs
 RUN mkdir -p /rathena/log
 
 # Exponer puertos
 EXPOSE 6900 6121 5121 8888
-
-# Script de inicio que ejecuta todos los servicios
-COPY start-railway.sh /start-railway.sh
-RUN chmod +x /start-railway.sh
 
 CMD ["/start-railway.sh"]
