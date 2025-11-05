@@ -20,6 +20,10 @@ generate_railway_config() {
     LOGIN_INTERNAL_PORT=${RATHENA_LOGIN_PORT:-6900}
     CHAR_INTERNAL_PORT=${RATHENA_CHAR_PORT:-6121}
     MAP_INTERNAL_PORT=${RATHENA_MAP_PORT:-5121}
+    LOGIN_BIND_ADDR=${RATHENA_LOGIN_BIND_IP:-0.0.0.0}
+    CHAR_BIND_ADDR=${RATHENA_CHAR_BIND_IP:-0.0.0.0}
+    MAP_BIND_ADDR=${RATHENA_MAP_BIND_IP:-0.0.0.0}
+    LOOPBACK_ADDR=127.0.0.1
 
     export RATHENA_LOGIN_PORT=${LOGIN_INTERNAL_PORT}
     export RATHENA_CHAR_PORT=${CHAR_INTERNAL_PORT}
@@ -38,9 +42,9 @@ generate_railway_config() {
     echo "=== SINGLE-SERVICE DEPLOYMENT ==="
     echo "All clients connect to: ${PUBLIC_HOST}:${RAILWAY_TCP_PROXY_PORT}"
     echo "Internal routing:"
-    echo "  - Login backend: 127.0.0.1:${LOGIN_INTERNAL_PORT}"
-    echo "  - Char backend : 127.0.0.1:${CHAR_INTERNAL_PORT}"
-    echo "  - Map backend  : 127.0.0.1:${MAP_INTERNAL_PORT}"
+    echo "  - Login backend: ${LOGIN_BIND_ADDR}:${LOGIN_INTERNAL_PORT}"
+    echo "  - Char backend : ${CHAR_BIND_ADDR}:${CHAR_INTERNAL_PORT}"
+    echo "  - Map backend  : ${MAP_BIND_ADDR}:${MAP_INTERNAL_PORT}"
     echo "==============================="
     
     # Create inter-server config for Railway
@@ -81,7 +85,7 @@ EOF
     # Login server config - external client connections
     cat > conf/import/railway_login.conf <<EOF
 // Railway login server config
-bind_ip: 0.0.0.0
+bind_ip: ${LOGIN_BIND_ADDR}
 login_port: ${LOGIN_INTERNAL_PORT}
 char_server_ip: ${PUBLIC_HOST}
 char_server_port: ${RAILWAY_TCP_PROXY_PORT}
@@ -93,8 +97,8 @@ EOF
 // Railway char server config
 login_ip: 127.0.0.1
 login_port: ${LOGIN_INTERNAL_PORT}
-bind_ip: 0.0.0.0
-char_ip: 0.0.0.0
+bind_ip: ${CHAR_BIND_ADDR}
+char_ip: ${CHAR_BIND_ADDR}
 char_port: ${CHAR_INTERNAL_PORT}
 advertise_host: ${PUBLIC_HOST}
 advertise_port: ${RAILWAY_TCP_PROXY_PORT}
@@ -102,12 +106,12 @@ console_msg_log: 7
 EOF
 
     # Map server config - internal communication
-    cat > conf/import/railway_map.conf <<EOF
+cat > conf/import/railway_map.conf <<EOF
 // Railway map server config
-char_ip: 127.0.0.1
+char_ip: ${LOOPBACK_ADDR}
 char_port: ${CHAR_INTERNAL_PORT}
-bind_ip: 0.0.0.0
-map_ip: 0.0.0.0
+bind_ip: ${MAP_BIND_ADDR}
+map_ip: ${MAP_BIND_ADDR}
 map_port: ${MAP_INTERNAL_PORT}
 advertise_host: ${PUBLIC_HOST}
 advertise_port: ${RAILWAY_TCP_PROXY_PORT}
