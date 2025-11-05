@@ -105,7 +105,7 @@ advertise_port: ${RAILWAY_TCP_PROXY_PORT}
 console_msg_log: 7
 EOF
 
-# Map server config - internal communication
+    # Map server config - internal communication
     cat > conf/import/railway_map.conf <<EOF
 // Railway map server config
 char_ip: ${LOOPBACK_ADDR}
