@@ -25,7 +25,7 @@ WORKDIR /rathena
 COPY . .
 
 # Allow optional configure flags via build arg
-ARG CONFIGURE_FLAGS=
+ARG CONFIGURE_FLAGS="--enable-packetver=20200902"
 
 RUN chmod +x ./configure && \
     ./configure ${CONFIGURE_FLAGS} && \
@@ -50,11 +50,13 @@ COPY --from=builder /rathena/conf ./conf
 COPY --from=builder /rathena/npc ./npc
 COPY --from=builder /rathena/db ./db
 COPY --from=builder /rathena/sql-files ./sql-files
-COPY --from=builder /rathena/start-server.sh ./start-server.sh
 
-RUN chmod +x login-server char-server map-server start-server.sh
+# Copy Railway-optimized entrypoint
+COPY tools/docker/docker-entrypoint.sh ./docker-entrypoint.sh
 
-# Only login needs to be published externally; other ports stay internal.
-EXPOSE 6900
+RUN chmod +x login-server char-server map-server docker-entrypoint.sh
 
-ENTRYPOINT ["./start-server.sh"]
+# Railway will assign PORT dynamically - expose common Ragnarok ports  
+EXPOSE 6900 6121 5121
+
+ENTRYPOINT ["./docker-entrypoint.sh"]

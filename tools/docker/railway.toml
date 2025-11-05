@@ -1,0 +1,36 @@
+# Railway.app deployment configuration for rAthena
+# Place this in your repository root as railway.toml
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "tools/docker/Dockerfile"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"  
+restartPolicyMaxRetries = 3
+
+# TCP proxy configuration
+[[deploy.tcpProxies]]
+applicationPort = 6900
+externalPort = 6900
+
+# Environment variables
+[env]
+# rAthena configuration
+PACKETVER = "20200902"
+
+# Server settings (Railway will auto-populate these)
+RAILWAY_TCP_PROXY_DOMAIN = "${{RAILWAY_PUBLIC_DOMAIN}}"
+RAILWAY_TCP_PROXY_PORT = "${{PORT}}"
+
+# Database (when using Railway MySQL addon)
+MYSQL_HOST = "${{MYSQL_HOST}}"
+MYSQL_PORT = "${{MYSQL_PORT}}"  
+MYSQL_USER = "${{MYSQL_USERNAME}}"
+MYSQL_PASSWORD = "${{MYSQL_PASSWORD}}"
+MYSQL_DATABASE = "${{MYSQL_DATABASE}}"
+
+# Alternative: Database URL (if Railway provides it as single URL)
+DATABASE_URL = "${{DATABASE_URL}}"

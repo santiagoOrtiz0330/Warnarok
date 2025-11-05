@@ -38,3 +38,33 @@ to
 ### F.A.Q
 
 `ls: can't open '.': Permission denied` turn off selinux.
+
+---
+
+## 🚀 **Railway.app Production Deployment**
+
+For **production deployments** on Railway.app, use the optimized single-service configuration:
+
+### **Quick Deploy**
+1. Fork this repository to GitHub
+2. Create new Railway project from your fork  
+3. Add Railway MySQL addon
+4. Deploy automatically using `tools/docker/Dockerfile`
+
+### **Railway Files**
+- **`docker-entrypoint.sh`**: Production entrypoint for Railway
+- **`docker-compose.railway.yml`**: Railway-optimized compose file
+- **`railway.toml`**: Railway deployment configuration
+
+### **Single-Service Architecture**
+- All servers (login, char, map) in one container
+- Internal localhost communication (127.0.0.1)
+- Single TCP proxy endpoint for external clients
+- Automatic Railway environment detection
+
+### **Features**
+- ✅ Auto-configuration for Railway environment
+- ✅ PACKETVER 20200902 for stable client compatibility  
+- ✅ advertise_port implementation for TCP proxy routing
+- ✅ Health monitoring and graceful shutdown
+- ✅ Optimized for Railway's container platform

@@ -1,0 +1,70 @@
+# Railway-optimized single-service deployment
+# This runs all three rAthena servers in one container with internal localhost communication
+# Only the login port is exposed externally via Railway's TCP proxy
+
+version: "3.8"
+
+services:
+  rathena-railway:
+    build:
+      context: ../..  # Build from repository root
+      dockerfile: tools/docker/Dockerfile
+      args:
+        CONFIGURE_FLAGS: "--enable-packetver=20200902"
+    container_name: "rathena-railway-single"
+    environment:
+      # Railway will provide these automatically
+      - RAILWAY_TCP_PROXY_DOMAIN=${RAILWAY_PUBLIC_DOMAIN:-localhost}
+      - RAILWAY_TCP_PROXY_PORT=${PORT:-6900}
+      
+      # Database connection (Railway MySQL addon)
+      - DATABASE_URL=${DATABASE_URL:-}
+      - MYSQL_HOST=${MYSQL_HOST:-localhost}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_USER=${MYSQL_USER:-ragnarok}  
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-ragnarok}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-ragnarok}
+      
+      # rAthena specific
+      - PACKETVER=20200902
+      
+    ports:
+      # Railway will map its TCP proxy port to this port
+      - "${PORT:-6900}:${PORT:-6900}"
+      
+    # For local development, you can expose individual ports
+    # - "6900:6900"  # login
+    # - "6121:6121"  # char  
+    # - "5121:5121"  # map
+      
+    restart: unless-stopped
+    
+    # Health check to ensure all servers are running
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "login-server|char-server|map-server"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      
+  # Optional: Local MariaDB for development
+  # Remove this for Railway deployment (use Railway MySQL addon instead)
+  rathena-db:
+    image: "mariadb:10.9"
+    container_name: "rathena-db-local"
+    environment:
+      MYSQL_ROOT_PASSWORD: ragnarok
+      MYSQL_DATABASE: ragnarok  
+      MYSQL_USER: ragnarok
+      MYSQL_PASSWORD: ragnarok
+    volumes:
+      - "rathena_db_data:/var/lib/mysql"
+      - "../../sql-files:/docker-entrypoint-initdb.d:ro"
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    profiles:
+      - local-dev  # Only start with: docker-compose --profile local-dev up
+
+volumes:
+  rathena_db_data:
