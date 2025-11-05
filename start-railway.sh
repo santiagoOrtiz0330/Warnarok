@@ -54,21 +54,21 @@ map_server_db: ${DATABASE_NAME}
 EOF
 
 # Login configuration
-cat > /rathena/conf/import/login_conf.txt << EOF
+cat > conf/import/login_conf.txt << EOF
 // Login server configuration for Railway
 
 // Bind to all interfaces para recibir conexiones
 login_ip: 0.0.0.0
 login_port: 6900
 
-// Enable web auth token
-use_web_auth_token: yes
+// DESHABILITAR web auth token completamente
+use_web_auth_token: no
 
-// AUMENTAR EL DELAY - 30 segundos en lugar de 10
-disable_webtoken_delay: 30000
-
-// Keep web tokens active longer
-webtoken_expiration_time: 300000
+// Configuraciones adicionales para estabilidad
+check_client_version: no
+allowed_regs: 1
+time_allowed: 10
+enable_ip_rules: no
 EOF
 
 # Char configuration - CLAVE: usar IP interna para comunicación interna
