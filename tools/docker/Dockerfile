@@ -40,7 +40,8 @@ RUN apt-get update && \
         libmysqlclient21 \
         zlib1g \
         libpcre3 \
-        bash && \
+        bash \
+        python3 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /rathena
@@ -53,10 +54,11 @@ COPY --from=builder /rathena/sql-files ./sql-files
 
 # Copy Railway-optimized entrypoint
 COPY tools/docker/docker-entrypoint.sh ./docker-entrypoint.sh
+COPY tools/docker/smart_proxy.py ./smart_proxy.py
 
-RUN chmod +x login-server char-server map-server docker-entrypoint.sh
+RUN chmod +x login-server char-server map-server docker-entrypoint.sh smart_proxy.py
 
-# Railway will assign PORT dynamically - expose common Ragnarok ports  
-EXPOSE 6900 6121 5121
+# Railway listens through the smart proxy on PORT (defaults to 6900)
+EXPOSE 6900
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

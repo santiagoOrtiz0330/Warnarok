@@ -16,6 +16,14 @@ generate_railway_config() {
     RAILWAY_TCP_PROXY_DOMAIN=${RAILWAY_TCP_PROXY_DOMAIN:-${RAILWAY_PUBLIC_DOMAIN:-}}
     RAILWAY_TCP_PROXY_PORT=${RAILWAY_TCP_PROXY_PORT:-${PORT:-6900}}
     PUBLIC_HOST=${RAILWAY_TCP_PROXY_DOMAIN:-127.0.0.1}
+
+    LOGIN_INTERNAL_PORT=${RATHENA_LOGIN_PORT:-6900}
+    CHAR_INTERNAL_PORT=${RATHENA_CHAR_PORT:-6121}
+    MAP_INTERNAL_PORT=${RATHENA_MAP_PORT:-5121}
+
+    export RATHENA_LOGIN_PORT=${LOGIN_INTERNAL_PORT}
+    export RATHENA_CHAR_PORT=${CHAR_INTERNAL_PORT}
+    export RATHENA_MAP_PORT=${MAP_INTERNAL_PORT}
     
     # Database connection (Railway MySQL)
     DB_HOST=${DATABASE_URL:-${MYSQL_HOST:-db}}
@@ -30,9 +38,9 @@ generate_railway_config() {
     echo "=== SINGLE-SERVICE DEPLOYMENT ==="
     echo "All clients connect to: ${PUBLIC_HOST}:${RAILWAY_TCP_PROXY_PORT}"
     echo "Internal routing:"
-    echo "  - Login: 127.0.0.1:${RAILWAY_TCP_PROXY_PORT} (external clients)"
-    echo "  - Char: 127.0.0.1:6121 (internal + advertised externally)"  
-    echo "  - Map: 127.0.0.1:5121 (internal + advertised externally)"
+    echo "  - Login backend: 127.0.0.1:${LOGIN_INTERNAL_PORT}"
+    echo "  - Char backend : 127.0.0.1:${CHAR_INTERNAL_PORT}"
+    echo "  - Map backend  : 127.0.0.1:${MAP_INTERNAL_PORT}"
     echo "==============================="
     
     # Create inter-server config for Railway
@@ -72,27 +80,24 @@ EOF
 
     # Login server config - external client connections
     cat > conf/import/railway_login.conf <<EOF
-// Railway login server config  
-bind_ip: 0.0.0.0
-login_port: ${RAILWAY_TCP_PROXY_PORT}
-// SOLUTION: Use standard Ragnarok ports on Railway domain
-// Client will try to connect to char server on port 6121
-// Railway needs to expose BOTH ports: ${RAILWAY_TCP_PROXY_PORT} (login) AND 6121 (char)
+// Railway login server config
+bind_ip: 127.0.0.1
+login_port: ${LOGIN_INTERNAL_PORT}
 char_server_ip: ${PUBLIC_HOST}
-char_server_port: 6121
+char_server_port: ${RAILWAY_TCP_PROXY_PORT}
 console_msg_log: 7
 EOF
 
     # Char server config - internal + advertised addresses
     cat > conf/import/railway_char.conf <<EOF
-// Railway char server config  
+// Railway char server config
 login_ip: 127.0.0.1
-login_port: 6900
-bind_ip: 0.0.0.0
-char_ip: 0.0.0.0
-char_port: 6121
+login_port: ${LOGIN_INTERNAL_PORT}
+bind_ip: 127.0.0.1
+char_ip: 127.0.0.1
+char_port: ${CHAR_INTERNAL_PORT}
 advertise_host: ${PUBLIC_HOST}
-advertise_port: 6121
+advertise_port: ${RAILWAY_TCP_PROXY_PORT}
 console_msg_log: 7
 EOF
 
@@ -100,16 +105,25 @@ EOF
     cat > conf/import/railway_map.conf <<EOF
 // Railway map server config
 char_ip: 127.0.0.1
-char_port: 6121
+char_port: ${CHAR_INTERNAL_PORT}
 bind_ip: 127.0.0.1
 map_ip: 127.0.0.1
-map_port: 5121
-advertise_host: ${PUBLIC_HOST}  
-advertise_port: 5121
+map_port: ${MAP_INTERNAL_PORT}
+advertise_host: ${PUBLIC_HOST}
+advertise_port: ${RAILWAY_TCP_PROXY_PORT}
 console_msg_log: 7
 EOF
 
     echo "Configuration generated successfully!"
+}
+
+# Start TCP smart proxy
+start_proxy() {
+    echo "Starting smart proxy on ${RAILWAY_TCP_PROXY_PORT:-${PORT:-6900}}..."
+    mkdir -p log
+    python3 ./smart_proxy.py > log/proxy.log 2>&1 &
+    PROXY_PID=$!
+    echo "Smart proxy started (PID: $PROXY_PID)"
 }
 
 # Start all servers in single container
@@ -147,7 +161,7 @@ start_servers() {
     PIDS=($LOGIN_PID $CHAR_PID $MAP_PID)
     
     # Setup signal handlers for graceful shutdown
-    trap "echo 'Shutting down servers...'; kill $LOGIN_PID $CHAR_PID $MAP_PID 2>/dev/null || true; exit 0" TERM INT
+    trap "echo 'Shutting down servers...'; kill $LOGIN_PID $CHAR_PID $MAP_PID 2>/dev/null || true; [[ -n \"${PROXY_PID:-}\" ]] && kill $PROXY_PID 2>/dev/null || true; exit 0" TERM INT
     
     echo "All servers started successfully!"
     echo "PIDs: Login=$LOGIN_PID, Char=$CHAR_PID, Map=$MAP_PID"
@@ -171,6 +185,11 @@ start_servers() {
             kill $LOGIN_PID $CHAR_PID 2>/dev/null || true
             exit 1
         fi
+        if [[ -n "${PROXY_PID:-}" ]] && ! kill -0 "$PROXY_PID" 2>/dev/null; then
+            echo "Smart proxy died! Shutting down..."
+            kill $LOGIN_PID $CHAR_PID $MAP_PID 2>/dev/null || true
+            exit 1
+        fi
         
         # Show recent log entries every 30 seconds
         sleep 30
@@ -181,6 +200,10 @@ start_servers() {
         tail -n 3 log/char.log || echo "No char log yet"
         echo "Map server (last 3 lines):"
         tail -n 3 log/map.log || echo "No map log yet"
+        if [[ -n "${PROXY_PID:-}" ]]; then
+            echo "Smart proxy (last 3 lines):"
+            tail -n 3 log/proxy.log || echo "No proxy log yet"
+        fi
         echo "=========================="
     done
 }
@@ -189,6 +212,7 @@ start_servers() {
 if [[ $# -eq 0 ]]; then
     # Default: start all services for Railway deployment
     generate_railway_config
+    start_proxy
     start_servers
 else
     # Allow running specific commands

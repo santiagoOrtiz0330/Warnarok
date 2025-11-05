@@ -79,3 +79,6 @@ With these knobs in place, the servers can listen on internal-only ports while
 presenting public-facing endpoints that match the TCP proxies or NAT mappings
 in front of them.
 
+## Smart Proxy Mode
+
+When the login, char, and map servers share a single externally exposed port (Railway single-service deployment), the container runs smart_proxy.py. It listens on PORT (default 6900), inspects the first packet, and forwards the connection to 127.0.0.1:6900 (login), 127.0.0.1:6121 (char), or 127.0.0.1:5121 (map). For this setup the char and map servers should advertise the proxy host and port (the same value clients use to reach the login server).
