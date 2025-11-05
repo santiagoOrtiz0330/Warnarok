@@ -135,7 +135,7 @@ start_servers() {
     PIDS=($LOGIN_PID $CHAR_PID $MAP_PID)
     
     # Setup signal handlers for graceful shutdown
-    trap "echo 'Shutting down servers...'; kill ${PIDS[@]} 2>/dev/null || true; exit 0" TERM INT
+    trap "echo 'Shutting down servers...'; kill $LOGIN_PID $CHAR_PID $MAP_PID 2>/dev/null || true; exit 0" TERM INT
     
     echo "All servers started successfully!"
     echo "PIDs: Login=$LOGIN_PID, Char=$CHAR_PID, Map=$MAP_PID"
@@ -144,13 +144,21 @@ start_servers() {
     # Monitor processes and logs
     while true; do
         # Check if any process died
-        for pid in "${PIDS[@]}"; do
-            if ! kill -0 "$pid" 2>/dev/null; then
-                echo "Process $pid died! Shutting down..."
-                kill "${PIDS[@]}" 2>/dev/null || true
-                exit 1
-            fi
-        done
+        if ! kill -0 "$LOGIN_PID" 2>/dev/null; then
+            echo "Login server died! Shutting down..."
+            kill $CHAR_PID $MAP_PID 2>/dev/null || true
+            exit 1
+        fi
+        if ! kill -0 "$CHAR_PID" 2>/dev/null; then
+            echo "Char server died! Shutting down..."
+            kill $LOGIN_PID $MAP_PID 2>/dev/null || true
+            exit 1
+        fi
+        if ! kill -0 "$MAP_PID" 2>/dev/null; then
+            echo "Map server died! Shutting down..."
+            kill $LOGIN_PID $CHAR_PID 2>/dev/null || true
+            exit 1
+        fi
         
         # Show recent log entries every 30 seconds
         sleep 30
