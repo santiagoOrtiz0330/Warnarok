@@ -53,63 +53,63 @@ map_server_pw: ${DATABASE_PASSWORD}
 map_server_db: ${DATABASE_NAME}
 EOF
 
-# Login configuration
-cat > conf/import/login_conf.txt << EOF
-// Login server configuration for Railway
+# # Login configuration
+# cat > conf/import/login_conf.txt << EOF
+# // Login server configuration for Railway
 
-// Bind to all interfaces para recibir conexiones
-login_ip: 0.0.0.0
-login_port: 6900
+# // Bind to all interfaces para recibir conexiones
+# login_ip: 0.0.0.0
+# login_port: 6900
 
-// DESHABILITAR web auth token completamente
-use_web_auth_token: no
+# // DESHABILITAR web auth token completamente
+# use_web_auth_token: no
 
-// Configuraciones adicionales para estabilidad
-check_client_version: no
-allowed_regs: 1
-time_allowed: 10
-enable_ip_rules: no
-EOF
+# // Configuraciones adicionales para estabilidad
+# check_client_version: no
+# allowed_regs: 1
+# time_allowed: 10
+# enable_ip_rules: no
+# EOF
 
-# Char configuration - CLAVE: usar IP interna para comunicación interna
-cat > /rathena/conf/import/char_conf.txt << EOF
-// Character server configuration for Railway
+# # Char configuration - CLAVE: usar IP interna para comunicación interna
+# cat > /rathena/conf/import/char_conf.txt << EOF
+# // Character server configuration for Railway
 
-// Bind to all interfaces para recibir conexiones
-char_ip: 0.0.0.0
-char_port: 6121
+# // Bind to all interfaces para recibir conexiones
+# char_ip: 0.0.0.0
+# char_port: 6121
 
-// Conectar al login server usando IP interna
-login_ip: 127.0.0.1
-login_port: 6900
+# // Conectar al login server usando IP interna
+# login_ip: 127.0.0.1
+# login_port: 6900
 
-// IMPORTANTE: IP que se reporta al login server (debe ser IP interna)
-char_server_ip: 0.0.0.0
-char_server_port: 6121
-EOF
+# // IMPORTANTE: IP que se reporta al login server (debe ser IP interna)
+# char_server_ip: 0.0.0.0
+# char_server_port: 6121
+# EOF
 
-# Map configuration
-cat > /rathena/conf/import/map_conf.txt << EOF
-// Map server configuration for Railway
-map_ip: 0.0.0.0
-map_port: 5121
+# # Map configuration
+# cat > /rathena/conf/import/map_conf.txt << EOF
+# // Map server configuration for Railway
+# map_ip: 0.0.0.0
+# map_port: 5121
 
-// Conectar al char server usando IP interna
-char_ip: 127.0.0.1
-char_port: 6121
-EOF
+# // Conectar al char server usando IP interna
+# char_ip: 127.0.0.1
+# char_port: 6121
+# EOF
 
-# Web configuration
-cat > /rathena/conf/import/web_conf.txt << EOF
-// Web server configuration for Railway
-bind_ip: 0.0.0.0
-web_port: 8888
-sql.db_hostname: ${DATABASE_HOST}
-sql.db_port: ${DATABASE_PORT}
-sql.db_username: ${DATABASE_USER}
-sql.db_password: ${DATABASE_PASSWORD}
-sql.db_database: ${DATABASE_NAME}
-EOF
+# # Web configuration
+# cat > /rathena/conf/import/web_conf.txt << EOF
+# // Web server configuration for Railway
+# bind_ip: 0.0.0.0
+# web_port: 8888
+# sql.db_hostname: ${DATABASE_HOST}
+# sql.db_port: ${DATABASE_PORT}
+# sql.db_username: ${DATABASE_USER}
+# sql.db_password: ${DATABASE_PASSWORD}
+# sql.db_database: ${DATABASE_NAME}
+# EOF
 
 echo "✓ All configurations created"
 
