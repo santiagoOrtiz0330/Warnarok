@@ -4,8 +4,6 @@
     "dockerfilePath": "Dockerfile.railway"
   },
   "deploy": {
-    "restartPolicyType": "always",
-    "healthcheckPath": "/",
-    "healthcheckTimeout": 100
+    "restartPolicyType": "always"
   }
 }
