@@ -81,7 +81,7 @@ EOF
     # Login server config - external client connections
     cat > conf/import/railway_login.conf <<EOF
 // Railway login server config
-bind_ip: 127.0.0.1
+bind_ip: 0.0.0.0
 login_port: ${LOGIN_INTERNAL_PORT}
 char_server_ip: ${PUBLIC_HOST}
 char_server_port: ${RAILWAY_TCP_PROXY_PORT}
@@ -93,8 +93,8 @@ EOF
 // Railway char server config
 login_ip: 127.0.0.1
 login_port: ${LOGIN_INTERNAL_PORT}
-bind_ip: 127.0.0.1
-char_ip: 127.0.0.1
+bind_ip: 0.0.0.0
+char_ip: 0.0.0.0
 char_port: ${CHAR_INTERNAL_PORT}
 advertise_host: ${PUBLIC_HOST}
 advertise_port: ${RAILWAY_TCP_PROXY_PORT}
@@ -106,8 +106,8 @@ EOF
 // Railway map server config
 char_ip: 127.0.0.1
 char_port: ${CHAR_INTERNAL_PORT}
-bind_ip: 127.0.0.1
-map_ip: 127.0.0.1
+bind_ip: 0.0.0.0
+map_ip: 0.0.0.0
 map_port: ${MAP_INTERNAL_PORT}
 advertise_host: ${PUBLIC_HOST}
 advertise_port: ${RAILWAY_TCP_PROXY_PORT}
