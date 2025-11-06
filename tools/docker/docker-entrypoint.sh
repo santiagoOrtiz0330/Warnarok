@@ -83,8 +83,8 @@ log_db_db: ${DB_NAME}
 EOF
 
     # Login server config - external client connections
-    cat > conf/import/railway_login.conf <<EOF
-// Railway login server config
+    cat > conf/import/login_conf.txt <<EOF
+// Generated Railway login server config
 bind_ip: ${LOGIN_BIND_ADDR}
 login_port: ${LOGIN_INTERNAL_PORT}
 char_server_ip: ${PUBLIC_HOST}
@@ -93,8 +93,8 @@ console_msg_log: 7
 EOF
 
     # Char server config - internal + advertised addresses
-    cat > conf/import/railway_char.conf <<EOF
-// Railway char server config
+    cat > conf/import/char_conf.txt <<EOF
+// Generated Railway char server config
 login_ip: 127.0.0.1
 login_port: ${LOGIN_INTERNAL_PORT}
 bind_ip: ${CHAR_BIND_ADDR}
@@ -106,8 +106,8 @@ console_msg_log: 7
 EOF
 
     # Map server config - internal communication
-    cat > conf/import/railway_map.conf <<EOF
-// Railway map server config
+    cat > conf/import/map_conf.txt <<EOF
+// Generated Railway map server config
 char_ip: ${LOOPBACK_ADDR}
 char_port: ${CHAR_INTERNAL_PORT}
 bind_ip: ${MAP_BIND_ADDR}
