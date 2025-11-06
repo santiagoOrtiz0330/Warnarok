@@ -29,7 +29,7 @@ ARG CONFIGURE_FLAGS="--enable-packetver=20200902"
 
 RUN chmod +x ./configure && \
     ./configure ${CONFIGURE_FLAGS} && \
-    make server -j"$(nproc)"
+    make server
 
 # Runtime image --------------------------------------------------------------
 FROM ubuntu:22.04
